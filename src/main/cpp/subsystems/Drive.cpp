@@ -9,7 +9,7 @@ Drive::Drive() = default;
 // This method will be called once per scheduler run
 void Drive::Periodic() {}
 
-frc2::CommandPtr Drive::drive_command(
+frc2::CommandPtr Drive::driveCommand(
     std::function<double(void)> drive_power,
     std::function<double(void)> strafe_power,
     std::function<double(void)> rot_power
@@ -25,6 +25,20 @@ frc2::CommandPtr Drive::drive_command(
             m_DriveKinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
             auto [fl, fr, bl, br] = states;
             
+            frc::Rotation2d flEncoderRotation{(units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble()) * M_PI};
+            frc::Rotation2d frEncoderRotation{(units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble()) * M_PI};
+            frc::Rotation2d blEncoderRotation{(units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble()) * M_PI};
+            frc::Rotation2d brEncoderRotation{(units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble()) * M_PI};
+
+            fl.Optimize(flEncoderRotation);
+            fr.Optimize(frEncoderRotation);
+            bl.Optimize(blEncoderRotation);
+            br.Optimize(brEncoderRotation);
+
+            fl.CosineScale(flEncoderRotation);
+            fr.CosineScale(frEncoderRotation);
+            bl.CosineScale(blEncoderRotation);
+            br.CosineScale(brEncoderRotation);
         }
     );
 }

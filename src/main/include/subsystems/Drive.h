@@ -11,6 +11,8 @@
 #include <frc2/command/Commands.h>
 #include <frc2/command/FunctionalCommand.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
+#include <frc/controller/PIDController.h>
+#include <frc/controller/ProfiledPIDController.h>
 #include <units/length.h>
 #include <units/velocity.h>
 #include <units/angle.h>
@@ -28,7 +30,7 @@ class Drive : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
-  frc2::CommandPtr drive_command(
+  frc2::CommandPtr driveCommand(
     std::function<double(void)> drive_power,
     std::function<double(void)> strafe_power,
     std::function<double(void)> rot_power
@@ -52,6 +54,7 @@ class Drive : public frc2::SubsystemBase {
   rev::spark::SparkMax m_flDriveMotor {OperatorConstants::k_fl_drive_id, rev::spark::SparkMax::MotorType::kBrushless};
   rev::spark::SparkMax m_flRotMotor {OperatorConstants::k_fl_rot_id, rev::spark::SparkMax::MotorType::kBrushless};
   ctre::phoenix6::hardware::CANcoder m_flRotEncoder {OperatorConstants::k_fl_rot_encoder, "rio"};
+
 
   //FrontRightModule
   rev::spark::SparkMax m_frDriveMotor {OperatorConstants::k_fr_drive_id, rev::spark::SparkMax::MotorType::kBrushless};
