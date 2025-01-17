@@ -4,7 +4,12 @@
 
 #include "subsystems/Drive.h"
 
-Drive::Drive() = default;
+Drive::Drive() {
+    m_flRotPID.EnableContinuousInput(-(units::radian_t)(M_PI), (units::radian_t)(M_PI));
+    m_frRotPID.EnableContinuousInput(-(units::radian_t)(M_PI), (units::radian_t)(M_PI));
+    m_blRotPID.EnableContinuousInput(-(units::radian_t)(M_PI), (units::radian_t)(M_PI));
+    m_brRotPID.EnableContinuousInput(-(units::radian_t)(M_PI), (units::radian_t)(M_PI));
+}
 
 // This method will be called once per scheduler run
 void Drive::Periodic() {}
@@ -40,10 +45,10 @@ frc2::CommandPtr Drive::driveCommand(
             bl.CosineScale(blEncoderRotation);
             br.CosineScale(brEncoderRotation);
 
-            units::volt_t flDrivePIDVoltage = (units::volt_t)(m_flDrivePID.Calculate(m_flDriveEncoder.GetVelocity() * M_PI * 0.0762 / 5.14, fl.speed.value()));
-            units::volt_t frDrivePIDVoltage = (units::volt_t)(m_frDrivePID.Calculate(m_frDriveEncoder.GetVelocity() * M_PI * 0.0762 / 5.14, fr.speed.value()));
-            units::volt_t blDrivePIDVoltage = (units::volt_t)(m_blDrivePID.Calculate(m_blDriveEncoder.GetVelocity() * M_PI * 0.0762 / 5.14, bl.speed.value()));
-            units::volt_t brDrivePIDVoltage = (units::volt_t)(m_brDrivePID.Calculate(m_brDriveEncoder.GetVelocity() * M_PI * 0.0762 / 5.14, br.speed.value()));
+            units::volt_t flDrivePIDVoltage = (units::volt_t)(m_flDrivePID.Calculate(m_flDriveEncoder.GetVelocity() * M_PI * 0.1016 / 5.14, fl.speed.value()));
+            units::volt_t frDrivePIDVoltage = (units::volt_t)(m_frDrivePID.Calculate(m_frDriveEncoder.GetVelocity() * M_PI * 0.1016 / 5.14, fr.speed.value()));
+            units::volt_t blDrivePIDVoltage = (units::volt_t)(m_blDrivePID.Calculate(m_blDriveEncoder.GetVelocity() * M_PI * 0.1016 / 5.14, bl.speed.value()));
+            units::volt_t brDrivePIDVoltage = (units::volt_t)(m_brDrivePID.Calculate(m_brDriveEncoder.GetVelocity() * M_PI * 0.1016 / 5.14, br.speed.value()));
 
             units::volt_t flDriveFFVoltage = m_flDriveFF.Calculate(fl.speed);
             units::volt_t frDriveFFVoltage = m_flDriveFF.Calculate(fr.speed);
