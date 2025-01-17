@@ -17,7 +17,11 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::ConfigureBindings() {
-  
+  m_drive.SetDefaultCommand(m_drive.driveCommand(
+    [this]() { return m_driverController.GetLeftX(); },
+    [this]() { return -m_driverController.GetLeftY(); },
+    [this]() { return m_driverController.GetRightY(); }
+  ));
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
