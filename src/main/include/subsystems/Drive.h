@@ -51,7 +51,7 @@ class Drive : public frc2::SubsystemBase {
   );
 
  private:
-  units::meters_per_second_t kRobotMaxSpeed = 3_mps;
+  units::meters_per_second_t kRobotMaxSpeed = 1_mps;
   units::radians_per_second_t kRobotRotMaxSpeed = 2_rad_per_s;
   frc::SlewRateLimiter<units::scalar> XRateLimiter{3 / 1_s};
   frc::SlewRateLimiter<units::scalar> YRateLimiter{3 / 1_s};

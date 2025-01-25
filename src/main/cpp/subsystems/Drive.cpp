@@ -17,6 +17,7 @@ Drive::Drive() {
     frc::SmartDashboard::PutData("FRDRIVE PID Controller", &m_frDrivePID);
     frc::SmartDashboard::PutData("BLDRIVE PID Controller", &m_blDrivePID);
     frc::SmartDashboard::PutData("BRDRIVE PID Controller", &m_brDrivePID);
+    gyro.SetGyroAngle(frc::ADIS16470_IMU::IMUAxis::kYaw, 0.0_deg);
 }
 
 // This method will be called once per scheduler run
@@ -36,14 +37,16 @@ frc2::CommandPtr Drive::driveCommand(
             units::radians_per_second_t rot_vel = RotRateLimiter.Calculate(frc::ApplyDeadband(rot_power(), 0.05)) * kRobotRotMaxSpeed;
 
             frc::ChassisSpeeds speeds{drive_vel, strafe_vel, rot_vel};
-            auto states = m_DriveKinematics.ToSwerveModuleStates(frc::ChassisSpeeds::Discretize(speeds, 0.02_s));
+            frc::Rotation2d angle{gyro.GetAngle()};
+            auto states = m_DriveKinematics.ToSwerveModuleStates(frc::ChassisSpeeds::Discretize(
+                frc::ChassisSpeeds::FromFieldRelativeSpeeds(speeds, angle), 0.02_s));
             m_DriveKinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);  
             auto [fl, fr, bl, br] = states;
 
             frc::Rotation2d flEncoderRotation{(units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble()) * M_PI * 2};
-            frc::Rotation2d frEncoderRotation{(units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble()) * M_PI * 2};
-            frc::Rotation2d blEncoderRotation{(units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble()) * M_PI * 2};
-            frc::Rotation2d brEncoderRotation{(units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble()) * M_PI * 2};
+            frc::Rotation2d frEncoderRotation{(units::radian_t)(m_frRotEncoder.GetAbsolutePosition().GetValueAsDouble()) * M_PI * 2};
+            frc::Rotation2d blEncoderRotation{(units::radian_t)(m_blRotEncoder.GetAbsolutePosition().GetValueAsDouble()) * M_PI * 2};
+            frc::Rotation2d brEncoderRotation{(units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble()) * M_PI * 2};
 
             fl.Optimize(flEncoderRotation);
             fr.Optimize(frEncoderRotation);
@@ -62,9 +65,9 @@ frc2::CommandPtr Drive::driveCommand(
             units::volt_t brDrivePIDVoltage = (units::volt_t)(m_brDrivePID.Calculate(m_brDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60), br.speed.value()));
 
             units::volt_t flDriveFFVoltage = m_flDriveFF.Calculate(fl.speed);
-            units::volt_t frDriveFFVoltage = m_flDriveFF.Calculate(fr.speed);
-            units::volt_t blDriveFFVoltage = m_flDriveFF.Calculate(bl.speed);
-            units::volt_t brDriveFFVoltage = m_flDriveFF.Calculate(br.speed);
+            units::volt_t frDriveFFVoltage = m_frDriveFF.Calculate(fr.speed);
+            units::volt_t blDriveFFVoltage = m_blDriveFF.Calculate(bl.speed);
+            units::volt_t brDriveFFVoltage = m_brDriveFF.Calculate(br.speed);
 
             m_flDriveMotor.SetVoltage(flDrivePIDVoltage + flDriveFFVoltage);
             m_frDriveMotor.SetVoltage(frDrivePIDVoltage + frDriveFFVoltage);
@@ -104,6 +107,7 @@ frc2::CommandPtr Drive::driveCommand(
             frc::SmartDashboard::PutNumber("FREncoderVel", m_frRotEncoder.GetVelocity().GetValueAsDouble() * M_PI * 2);
             frc::SmartDashboard::PutNumber("BLEncoderVel", m_blRotEncoder.GetVelocity().GetValueAsDouble() * M_PI * 2);
             frc::SmartDashboard::PutNumber("BREncoderVel", m_brRotEncoder.GetVelocity().GetValueAsDouble() * M_PI * 2);
+            frc::SmartDashboard::PutNumber("Gyro Angle", gyro.GetAngle().value());
             publisher.Set(
                 std::vector{
                     fl, fr, bl, br
