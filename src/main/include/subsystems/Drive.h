@@ -50,6 +50,19 @@ class Drive : public frc2::SubsystemBase {
     std::function<double(void)> rot_power
   );
 
+  frc2::CommandPtr autoDriveCommand(
+    units::meters_per_second_t autoxspeed,
+    units::meters_per_second_t autoyspeed,
+    units::radians_per_second_t autorotspeed
+  );
+
+  void SwerveDrive(
+    units::meters_per_second_t xspeed,
+    units::meters_per_second_t yspeed,
+    units::radians_per_second_t rotspeed,
+    bool fieldRelative
+  );
+
  private:
   units::meters_per_second_t kRobotMaxSpeed = 1_mps;
   units::radians_per_second_t kRobotRotMaxSpeed = 2_rad_per_s;
