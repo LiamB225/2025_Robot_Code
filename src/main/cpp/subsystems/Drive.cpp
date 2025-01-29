@@ -45,19 +45,13 @@ frc2::CommandPtr Drive::driveCommand(
     );
 }
 
-frc2::CommandPtr Drive::autoDriveCommand(
-    units::meters_per_second_t autoxspeed,
-    units::meters_per_second_t autoyspeed,
-    units::radians_per_second_t autorotspeed
+void Drive::autoDrive(
+    frc::ChassisSpeeds autospeeds
 ) {
-    return this->RunEnd(
-        [this, autoxspeed, autoyspeed, autorotspeed]() {
+            units::meters_per_second_t autoxspeed = autospeeds.vx;
+            units::meters_per_second_t autoyspeed = autospeeds.vy;
+            units::radians_per_second_t autorotspeed = autospeeds.omega;
             SwerveDrive(autoxspeed, autoyspeed, autorotspeed, false);
-        },
-        [this]() {
-            SwerveDrive(0_mps, 0_mps, 0_rad_per_s, false);
-        }
-    );
 }
 
 

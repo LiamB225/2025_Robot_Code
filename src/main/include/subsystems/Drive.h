@@ -50,10 +50,8 @@ class Drive : public frc2::SubsystemBase {
     std::function<double(void)> rot_power
   );
 
-  frc2::CommandPtr autoDriveCommand(
-    units::meters_per_second_t autoxspeed,
-    units::meters_per_second_t autoyspeed,
-    units::radians_per_second_t autorotspeed
+  void autoDrive(
+    frc::ChassisSpeeds autospeeds
   );
 
   void SwerveDrive(
