@@ -20,12 +20,24 @@ Drive::Drive() {
 
     //PathPlanner AutoBuilder
     pathplanner::AutoBuilder::configure(
-        [this]() {},
+        [this]() {return m_poseEstimator.GetEstimatedPosition();},
         [this]() {},
         [this]() {},
         [this](frc::ChassisSpeeds autoChassisSpeeds) {autoDrive(autoChassisSpeeds);},
-        
-    )
+        std::make_shared<pathplanner::PPHolonomicDriveController>(
+            pathplanner::PIDConstants(5.0, 0.0, 0.0),
+            pathplanner::PIDConstants(5.0, 0.0, 0.0)
+        ),
+        pathplanner::RobotConfig::fromGUISettings(),
+        []() {
+            auto alliance = frc::DriverStation::GetAlliance();
+            if (alliance) {
+                return alliance.value() == frc::DriverStation::Alliance::kRed;
+            }
+            return false;
+        },
+        this
+    );
 }
 
 // This method will be called once per scheduler run
