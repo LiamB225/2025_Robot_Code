@@ -19,9 +19,11 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/ADIS16470_IMU.h>
 #include <frc/filter/SlewRateLimiter.h>
+#include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <networktables/StructArrayTopic.h>
 #include <cmath>
 #include <math.h>
+#include <frc/DriverStation.h>
 
 #include <units/length.h>
 #include <units/velocity.h>
@@ -34,6 +36,9 @@
 #include <rev/SparkMax.h>
 #include <rev/SparkAbsoluteEncoder.h>
 #include <ctre/phoenix6/CANcoder.hpp>
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/config/RobotConfig.h>
+#include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 
 class Drive : public frc2::SubsystemBase {
  public:
@@ -122,6 +127,17 @@ class Drive : public frc2::SubsystemBase {
   frc::ProfiledPIDController<units::radians> m_brRotPID {2.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
   frc::SimpleMotorFeedforward<units::meters> m_brDriveFF {0.25784_V, 3.0909_V / 1_mps, 0.32694_V / 1_mps_sq};
   frc::SimpleMotorFeedforward<units::radians> m_brRotFF {0.25_V, 0.2_V / 1_rad_per_s};
+
+  frc::SwerveDrivePoseEstimator<4> m_poseEstimator{m_DriveKinematics, frc::Rotation2d{}, {
+    frc::SwerveModulePosition{(units::meter_t)(m_flDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
+     (units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
+    frc::SwerveModulePosition{(units::meter_t)(m_frDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
+     (units::radian_t)(m_frRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
+    frc::SwerveModulePosition{(units::meter_t)(m_blDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
+     (units::radian_t)(m_blRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
+    frc::SwerveModulePosition{(units::meter_t)(m_brDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
+     (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
+  }, frc::Pose2d{}};
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
