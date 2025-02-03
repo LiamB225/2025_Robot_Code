@@ -55,6 +55,10 @@ class Drive : public frc2::SubsystemBase {
     std::function<double(void)> rot_power
   );
 
+  void resetPosition(frc::Pose2d m_pose);
+
+  frc::ChassisSpeeds getRobotRelativeChassisSpeeds();
+
   void autoDrive(
     frc::ChassisSpeeds autospeeds
   );
@@ -128,6 +132,7 @@ class Drive : public frc2::SubsystemBase {
   frc::SimpleMotorFeedforward<units::meters> m_brDriveFF {0.25784_V, 3.0909_V / 1_mps, 0.32694_V / 1_mps_sq};
   frc::SimpleMotorFeedforward<units::radians> m_brRotFF {0.25_V, 0.2_V / 1_rad_per_s};
 
+  //Position Estimating
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator{m_DriveKinematics, frc::Rotation2d{}, {
     frc::SwerveModulePosition{(units::meter_t)(m_flDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
      (units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},

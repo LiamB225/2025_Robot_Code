@@ -21,8 +21,8 @@ Drive::Drive() {
     //PathPlanner AutoBuilder
     pathplanner::AutoBuilder::configure(
         [this]() {return m_poseEstimator.GetEstimatedPosition();},
-        [this]() {},
-        [this]() {},
+        [this](frc::Pose2d autoPosition) {resetPosition(autoPosition);},
+        [this]() {return getRobotRelativeChassisSpeeds();},
         [this](frc::ChassisSpeeds autoChassisSpeeds) {autoDrive(autoChassisSpeeds);},
         std::make_shared<pathplanner::PPHolonomicDriveController>(
             pathplanner::PIDConstants(5.0, 0.0, 0.0),
@@ -40,6 +40,7 @@ Drive::Drive() {
     );
 }
 
+
 // This method will be called once per scheduler run
 void Drive::Periodic() {
     frc::Rotation2d angle{gyro.GetAngle()};
@@ -54,6 +55,7 @@ void Drive::Periodic() {
      (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
     });
 }
+
 
 //Commands
 frc2::CommandPtr Drive::driveCommand(
@@ -75,6 +77,12 @@ frc2::CommandPtr Drive::driveCommand(
     );
 }
 
+
+//Auto Functions
+void Drive::resetPosition(frc::Pose2d m_pose) {
+    m_poseEstimator.ResetPose(m_pose);
+}
+
 void Drive::autoDrive(
     frc::ChassisSpeeds autospeeds
 ) {
@@ -82,6 +90,19 @@ void Drive::autoDrive(
             units::meters_per_second_t autoyspeed = autospeeds.vy;
             units::radians_per_second_t autorotspeed = autospeeds.omega;
             SwerveDrive(autoxspeed, autoyspeed, autorotspeed, false);
+}
+
+frc::ChassisSpeeds Drive::getRobotRelativeChassisSpeeds() {
+    return m_DriveKinematics.ToChassisSpeeds({
+    frc::SwerveModuleState{(units::meters_per_second_t)(m_flDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60)),
+     (units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
+    frc::SwerveModuleState{(units::meters_per_second_t)(m_frDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60)),
+     (units::radian_t)(m_frRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
+    frc::SwerveModuleState{(units::meters_per_second_t)(m_blDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60)),
+     (units::radian_t)(m_blRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
+    frc::SwerveModuleState{(units::meters_per_second_t)(m_brDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60)),
+     (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
+    });
 }
 
 

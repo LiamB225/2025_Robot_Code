@@ -11,7 +11,7 @@
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
-
+  frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
   // Configure the button bindings
   ConfigureBindings();
 }
@@ -25,6 +25,5 @@ void RobotContainer::ConfigureBindings() {
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-  // An example command will be run in autonomous
-  return autos::ExampleAuto(&m_subsystem);
+  return autoChooser.GetSelected();
 }
