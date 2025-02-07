@@ -22,8 +22,10 @@ class RobotContainer {
  public:
   RobotContainer();
 
-  frc2::CommandPtr GetAutonomousCommand();
-  frc::SendableChooser<frc2::CommandPtr> autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
+  frc2::Command* GetAutonomousCommand();
+  frc::SendableChooser<frc2::Command*> autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
+  
+  
 
  private:
   // Replace with CommandPS4Controller or CommandJoystick if needed
