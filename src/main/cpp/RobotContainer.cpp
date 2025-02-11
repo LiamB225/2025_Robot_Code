@@ -12,6 +12,7 @@
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
+
   // Configure the button bindings
   ConfigureBindings();
 }
@@ -22,6 +23,9 @@ void RobotContainer::ConfigureBindings() {
     [this]() { return -m_driverController.GetLeftX(); },
     [this]() { return -m_driverController.GetRightX(); }
   ));
+
+  m_driverController.RightBumper().WhileTrue(m_elevator.raiseElevatorCommand());
+  m_driverController.LeftBumper().WhileTrue(m_elevator.lowerElevatorCommand());
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

@@ -10,6 +10,7 @@
 #include "Constants.h"
 #include "subsystems/ExampleSubsystem.h"
 #include "subsystems/Drive.h"
+#include "subsystems/Elevator.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -35,6 +36,8 @@ class RobotContainer {
   // The robot's subsystems are defined here...
   ExampleSubsystem m_subsystem;
   Drive m_drive;
+  Elevator m_elevator;
+
 
   void ConfigureBindings();
 };

@@ -34,7 +34,6 @@
 #include <units/voltage.h>
 
 #include <rev/SparkMax.h>
-#include <rev/SparkAbsoluteEncoder.h>
 #include <ctre/phoenix6/CANcoder.hpp>
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/config/RobotConfig.h>
