@@ -6,7 +6,11 @@
 
 #include <frc2/command/CommandScheduler.h>
 
-Robot::Robot() {}
+Robot::Robot() {
+  for (int port = 5800; port <= 5809; port++) {
+    wpi::PortForwarder::GetInstance().Add(port, "primary-limelight.local", port);
+	}
+}
 
 /**
  * This function is called every 20 ms, no matter the mode. Use
