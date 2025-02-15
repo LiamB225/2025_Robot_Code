@@ -102,7 +102,7 @@ class Drive : public frc2::SubsystemBase {
   frc::PIDController m_flDrivePID {0.93435, 0.0, 0.0};
   frc::ProfiledPIDController<units::radians> m_flRotPID {2.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
   frc::SimpleMotorFeedforward<units::meters> m_flDriveFF {0.34215_V, 2.8653_V / 1_mps, 0.46871_V / 1_mps_sq};
-  frc::SimpleMotorFeedforward<units::radians> m_flRotFF {0.32_V, 0.2_V / 1_rad_per_s};
+  frc::SimpleMotorFeedforward<units::radians> m_flRotFF {0.45_V, 0.2_V / 1_rad_per_s};
 
   //FrontRightModules
   rev::spark::SparkMax m_frDriveMotor {OperatorConstants::k_fr_drive_id, rev::spark::SparkMax::MotorType::kBrushless};
@@ -111,7 +111,7 @@ class Drive : public frc2::SubsystemBase {
   frc::PIDController m_frDrivePID {0.22855, 0.0, 0.0};
   frc::ProfiledPIDController<units::radians> m_frRotPID {2.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
   frc::SimpleMotorFeedforward<units::meters> m_frDriveFF {0.26506_V, 3.1448_V / 1_mps, 0.26282_V / 1_mps_sq};
-  frc::SimpleMotorFeedforward<units::radians> m_frRotFF {0.3_V, 0.2_V / 1_rad_per_s};
+  frc::SimpleMotorFeedforward<units::radians> m_frRotFF {0.45_V, 0.2_V / 1_rad_per_s};
 
   //BackLeftModule
   rev::spark::SparkMax m_blDriveMotor {OperatorConstants::k_bl_drive_id, rev::spark::SparkMax::MotorType::kBrushless};
@@ -120,7 +120,7 @@ class Drive : public frc2::SubsystemBase {
   frc::PIDController m_blDrivePID {0.098998, 0.0, 0.0};
   frc::ProfiledPIDController<units::radians> m_blRotPID {2.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
   frc::SimpleMotorFeedforward<units::meters> m_blDriveFF {0.26098_V, 3.0776_V / 1_mps, 0.22215_V / 1_mps_sq};
-  frc::SimpleMotorFeedforward<units::radians> m_blRotFF {0.3_V, 0.2_V / 1_rad_per_s};
+  frc::SimpleMotorFeedforward<units::radians> m_blRotFF {0.45_V, 0.2_V / 1_rad_per_s};
 
   //BackRightModule
   rev::spark::SparkMax m_brDriveMotor {OperatorConstants::k_br_drive_id, rev::spark::SparkMax::MotorType::kBrushless};
@@ -129,7 +129,7 @@ class Drive : public frc2::SubsystemBase {
   frc::PIDController m_brDrivePID {0.67879, 0.0, 0.0};
   frc::ProfiledPIDController<units::radians> m_brRotPID {2.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
   frc::SimpleMotorFeedforward<units::meters> m_brDriveFF {0.25784_V, 3.0909_V / 1_mps, 0.32694_V / 1_mps_sq};
-  frc::SimpleMotorFeedforward<units::radians> m_brRotFF {0.25_V, 0.2_V / 1_rad_per_s};
+  frc::SimpleMotorFeedforward<units::radians> m_brRotFF {0.4_V, 0.2_V / 1_rad_per_s};
 
   //Position Estimating
   frc::SwerveDrivePoseEstimator<4> m_poseEstimator{m_DriveKinematics, frc::Rotation2d{}, {

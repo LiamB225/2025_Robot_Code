@@ -137,20 +137,20 @@ void Drive::SwerveDrive(
     br.CosineScale(brEncoderRotation);
 
     //Drive Control
-    units::volt_t flDrivePIDVoltage = (units::volt_t)(m_flDrivePID.Calculate(m_flDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60), fl.speed.value()));
-    units::volt_t frDrivePIDVoltage = (units::volt_t)(m_frDrivePID.Calculate(m_frDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60), fr.speed.value()));
-    units::volt_t blDrivePIDVoltage = (units::volt_t)(m_blDrivePID.Calculate(m_blDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60), bl.speed.value()));
-    units::volt_t brDrivePIDVoltage = (units::volt_t)(m_brDrivePID.Calculate(m_brDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60), br.speed.value()));
-
-    units::volt_t flDriveFFVoltage = m_flDriveFF.Calculate(fl.speed);
-    units::volt_t frDriveFFVoltage = m_frDriveFF.Calculate(fr.speed);
-    units::volt_t blDriveFFVoltage = m_blDriveFF.Calculate(bl.speed);
-    units::volt_t brDriveFFVoltage = m_brDriveFF.Calculate(br.speed);
-
-    m_flDriveMotor.SetVoltage(flDrivePIDVoltage + flDriveFFVoltage);
-    m_frDriveMotor.SetVoltage(frDrivePIDVoltage + frDriveFFVoltage);
-    m_blDriveMotor.SetVoltage(blDrivePIDVoltage + blDriveFFVoltage);
-    m_brDriveMotor.SetVoltage(brDrivePIDVoltage + brDriveFFVoltage);
+    //units::volt_t flDrivePIDVoltage = (units::volt_t)(m_flDrivePID.Calculate(m_flDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60), fl.speed.value()));
+    //units::volt_t frDrivePIDVoltage = (units::volt_t)(m_frDrivePID.Calculate(m_frDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60), fr.speed.value()));
+    //units::volt_t blDrivePIDVoltage = (units::volt_t)(m_blDrivePID.Calculate(m_blDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60), bl.speed.value()));
+    //units::volt_t brDrivePIDVoltage = (units::volt_t)(m_brDrivePID.Calculate(m_brDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60), br.speed.value()));
+//
+    //units::volt_t flDriveFFVoltage = m_flDriveFF.Calculate(fl.speed);
+    //units::volt_t frDriveFFVoltage = m_frDriveFF.Calculate(fr.speed);
+    //units::volt_t blDriveFFVoltage = m_blDriveFF.Calculate(bl.speed);
+    //units::volt_t brDriveFFVoltage = m_brDriveFF.Calculate(br.speed);
+//
+    //m_flDriveMotor.SetVoltage(flDrivePIDVoltage + flDriveFFVoltage);
+    //m_frDriveMotor.SetVoltage(frDrivePIDVoltage + frDriveFFVoltage);
+    //m_blDriveMotor.SetVoltage(blDrivePIDVoltage + blDriveFFVoltage);
+    //m_brDriveMotor.SetVoltage(brDrivePIDVoltage + brDriveFFVoltage);
 
     //Rotation Control
     units::volt_t flRotPIDVoltage = (units::volt_t)(m_flRotPID.Calculate((units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2), fl.angle.Radians()));
