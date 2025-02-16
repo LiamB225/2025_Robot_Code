@@ -19,6 +19,8 @@ class Elevator : public frc2::SubsystemBase {
 
   frc2::CommandPtr raiseElevatorCommand();
   frc2::CommandPtr lowerElevatorCommand();
+  frc2::CommandPtr coralOutCommand();
+  frc2::CommandPtr coralInCommand();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -30,4 +32,5 @@ class Elevator : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
 
   rev::spark::SparkMax m_elevatorMotor {OperatorConstants::k_elevator_id, rev::spark::SparkMax::MotorType::kBrushless};
+  rev::spark::SparkMax m_coralMotor {OperatorConstants::k_coral_id, rev::spark::SparkMax::MotorType::kBrushless};
 };

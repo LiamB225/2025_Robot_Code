@@ -15,14 +15,28 @@ void Elevator::Periodic() {
 
 frc2::CommandPtr Elevator::raiseElevatorCommand() {
     return this->RunEnd(
-        [this]() {m_elevatorMotor.Set(1.0);},
+        [this]() {m_elevatorMotor.Set(0.5);},
         [this]() {m_elevatorMotor.Set(0.0);}
     );
 }
 
 frc2::CommandPtr Elevator::lowerElevatorCommand() {
     return this->RunEnd(
-        [this]() {m_elevatorMotor.Set(-1.0);},
+        [this]() {m_elevatorMotor.Set(-0.5);},
         [this]() {m_elevatorMotor.Set(0.0);}
+    );
+}
+
+frc2::CommandPtr Elevator::coralOutCommand() {
+    return this->RunEnd(
+        [this]() {m_coralMotor.Set(1.0);},
+        [this]() {m_coralMotor.Set(0.0);}
+    );
+}
+
+frc2::CommandPtr Elevator::coralInCommand() {
+    return this->RunEnd(
+        [this]() {m_coralMotor.Set(-1.0);},
+        [this]() {m_coralMotor.Set(0.0);}
     );
 }
