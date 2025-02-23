@@ -17,6 +17,9 @@ Drive::Drive() {
     frc::SmartDashboard::PutData("FRDRIVE PID Controller", &m_frDrivePID);
     frc::SmartDashboard::PutData("BLDRIVE PID Controller", &m_blDrivePID);
     frc::SmartDashboard::PutData("BRDRIVE PID Controller", &m_brDrivePID);
+    frc::SmartDashboard::PutData("Translation X PID", &m_translationXPID);
+    frc::SmartDashboard::PutData("Translation Y PID", &m_translationYPID);
+    frc::SmartDashboard::PutData("Rotation PID", &m_rotationPID);
 
     //PathPlanner AutoBuilder
     pathplanner::AutoBuilder::configure(
@@ -38,6 +41,11 @@ Drive::Drive() {
         },
         this
     );
+
+    ntinst = nt::NetworkTableInstance::GetDefault();
+    m_translationXPID.SetTolerance(0.01_m);
+    m_translationYPID.SetTolerance(0.01_m);
+    m_rotationPID.SetTolerance(0.1_rad);
 }
 
 
@@ -54,6 +62,16 @@ void Drive::Periodic() {
     frc::SwerveModulePosition{(units::meter_t)(m_brDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
      (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
     });
+
+    std::vector<double> pos1(6);
+    pos1 = ntinst.GetTable("primary-limelight")->GetNumberArray("botpose_wpiblue", std::vector<double>(6));
+    frc::Pose2d limelightPosition1{(units::meter_t)(pos1[0]), (units::meter_t)(pos1[1]), frc::Rotation2d{(units::degree_t)(pos1[5])}};
+    m_poseEstimator.AddVisionMeasurement(limelightPosition1, frc::Timer::GetTimestamp());
+
+    std::vector<double> pos2(6);
+    pos2 = ntinst.GetTable("secondary-limelight")->GetNumberArray("botpose_wpiblue", std::vector<double>(6));
+    frc::Pose2d limelightPosition2{(units::meter_t)(pos2[0]), (units::meter_t)(pos2[1]), frc::Rotation2d{(units::degree_t)(pos2[5])}};
+    m_poseEstimator.AddVisionMeasurement(limelightPosition2, frc::Timer::GetTimestamp());
 }
 
 
@@ -69,11 +87,65 @@ frc2::CommandPtr Drive::driveCommand(
             units::meters_per_second_t strafe_vel = YRateLimiter.Calculate(frc::ApplyDeadband(strafe_power(), 0.05)) * kRobotMaxSpeed;
             units::radians_per_second_t rot_vel = RotRateLimiter.Calculate(frc::ApplyDeadband(rot_power(), 0.05)) * kRobotRotMaxSpeed;
 
-            SwerveDrive(drive_vel, strafe_vel, rot_vel, false);
+            SwerveDrive(drive_vel, strafe_vel, rot_vel, true, false);
         },
         [this]() {
-            SwerveDrive(0_mps, 0_mps, 0_rad_per_s, false);
+            SwerveDrive(0_mps, 0_mps, 0_rad_per_s, true, false);
         }
+    );
+}
+
+frc2::CommandPtr Drive::ScoreLeftCommand() {
+    return frc2::cmd::Sequence(
+        frc2::cmd::RunOnce(
+            [this]() {
+                std::vector<double> targetpos(6);
+                targetpos = ntinst.GetTable("primary-limelight")->GetNumberArray("botpose_targetspace", std::vector<double>(6));
+                m_targetPoseEstimator.ResetPose(
+                    frc::Pose2d{(units::meter_t)(targetpos[2]), (units::meter_t)(targetpos[0]), frc::Rotation2d{(units::degree_t)(targetpos[4])}}
+                );
+                m_timer.Start();
+            }
+        ),
+        frc2::cmd::Run(
+            [this]() {
+                frc::Rotation2d angle{gyro.GetAngle()};
+                m_targetPoseEstimator.Update(angle, {
+                    frc::SwerveModulePosition{(units::meter_t)(m_flDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
+                     (units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
+                    frc::SwerveModulePosition{(units::meter_t)(m_frDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
+                     (units::radian_t)(m_frRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
+                    frc::SwerveModulePosition{(units::meter_t)(m_blDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
+                     (units::radian_t)(m_blRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
+                    frc::SwerveModulePosition{(units::meter_t)(m_brDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
+                     (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
+                });
+
+                std::vector<double> targetpos(6);
+                targetpos = ntinst.GetTable("primary-limelight")->GetNumberArray("botpose_targetspace", std::vector<double>(6));
+                m_targetPoseEstimator.AddVisionMeasurement(
+                    frc::Pose2d{(units::meter_t)(targetpos[2]), (units::meter_t)(targetpos[0]), frc::Rotation2d{(units::degree_t)(targetpos[4])}},
+                    m_timer.Get()
+                );
+
+                SwerveDrive(
+                    (units::meters_per_second_t)(m_translationXPID.Calculate(m_targetPoseEstimator.GetEstimatedPosition().X(), 1.0_m)),
+                    (units::meters_per_second_t)(m_translationYPID.Calculate(m_targetPoseEstimator.GetEstimatedPosition().Y(), 1.0_m)),
+                    (units::radians_per_second_t)(m_rotationPID.Calculate(m_targetPoseEstimator.GetEstimatedPosition().Rotation().Radians(), 0.0_rad)),
+                    true,
+                    true
+                );
+            }
+        ).Until(
+            [this]() {
+                if(m_translationXPID.AtGoal() && m_translationYPID.AtGoal() && m_rotationPID.AtGoal()) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        )
     );
 }
 
@@ -89,7 +161,7 @@ void Drive::autoDrive(
             units::meters_per_second_t autoxspeed = autospeeds.vx;
             units::meters_per_second_t autoyspeed = autospeeds.vy;
             units::radians_per_second_t autorotspeed = autospeeds.omega;
-            SwerveDrive(autoxspeed, autoyspeed, autorotspeed, false);
+            SwerveDrive(autoxspeed, autoyspeed, autorotspeed, false, false);
 }
 
 frc::ChassisSpeeds Drive::getRobotRelativeChassisSpeeds() {
@@ -111,10 +183,12 @@ void Drive::SwerveDrive(
     units::meters_per_second_t xspeed,
     units::meters_per_second_t yspeed,
     units::radians_per_second_t rotspeed,
-    bool fieldRelative
+    bool fieldRelative,
+    bool tracking
 ) {
     frc::ChassisSpeeds speeds{xspeed, yspeed, rotspeed};
-    frc::Rotation2d angle{m_poseEstimator.GetEstimatedPosition().Rotation()};
+    frc::Rotation2d angle;
+    tracking ? angle = {m_targetPoseEstimator.GetEstimatedPosition().Rotation()} : angle = {m_poseEstimator.GetEstimatedPosition().Rotation()};
     auto states = m_DriveKinematics.ToSwerveModuleStates(frc::ChassisSpeeds::Discretize(
         fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(speeds, angle) : speeds,
         0.02_s));

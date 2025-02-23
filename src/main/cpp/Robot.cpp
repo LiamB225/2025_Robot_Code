@@ -10,6 +10,9 @@ Robot::Robot() {
   for (int port = 5800; port <= 5809; port++) {
     wpi::PortForwarder::GetInstance().Add(port, "primary-limelight.local", port);
 	}
+  for (int port = 5800; port <= 5809; port++) {
+    wpi::PortForwarder::GetInstance().Add(port+10, "secondary-limelight.local", port);
+  }
 }
 
 /**

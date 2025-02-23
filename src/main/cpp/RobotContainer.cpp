@@ -11,7 +11,9 @@
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
-  //pathplanner::NamedCommands::registerCommand("TestCommand", m_elevator.coralInCommand());
+  pathplanner::NamedCommands::registerCommand("FourthElevatorCommand", m_elevator.fourthPositionCommand());
+  pathplanner::NamedCommands::registerCommand("FirstElevatorCommand", m_elevator.firstPositionCommand());
+  pathplanner::NamedCommands::registerCommand("IntakeInCommand", m_elevator.coralInCommand().WithTimeout(0.5_s));
 
   autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
@@ -27,11 +29,16 @@ void RobotContainer::ConfigureBindings() {
     [this]() { return -m_driverController.GetRightX(); }
   ));
 
-  m_driverController.RightBumper().WhileTrue(m_elevator.raiseElevatorCommand());
-  m_driverController.LeftBumper().WhileTrue(m_elevator.lowerElevatorCommand());
-  
   m_driverController.RightTrigger().WhileTrue(m_elevator.coralOutCommand());
   m_driverController.LeftTrigger().WhileTrue(m_elevator.coralInCommand());
+
+  m_secondaryController.RightBumper().WhileTrue(m_elevator.raiseElevatorCommand());
+  m_secondaryController.LeftBumper().WhileTrue(m_elevator.lowerElevatorCommand());
+
+  m_secondaryController.A().OnTrue(m_elevator.firstPositionCommand());
+  m_secondaryController.B().OnTrue(m_elevator.secondPositionCommand());
+  m_secondaryController.X().OnTrue(m_elevator.thirdPositionCommand());
+  m_secondaryController.Y().OnTrue(m_elevator.fourthPositionCommand());
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

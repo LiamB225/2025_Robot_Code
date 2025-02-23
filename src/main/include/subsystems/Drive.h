@@ -20,6 +20,7 @@
 #include <frc/ADIS16470_IMU.h>
 #include <frc/filter/SlewRateLimiter.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
+#include <frc/Timer.h>
 #include <networktables/StructArrayTopic.h>
 #include <cmath>
 #include <math.h>
@@ -54,6 +55,9 @@ class Drive : public frc2::SubsystemBase {
     std::function<double(void)> rot_power
   );
 
+  frc2::CommandPtr ScoreRightCommand();
+  frc2::CommandPtr ScoreLeftCommand();
+
   void resetPosition(frc::Pose2d m_pose);
 
   frc::ChassisSpeeds getRobotRelativeChassisSpeeds();
@@ -66,7 +70,8 @@ class Drive : public frc2::SubsystemBase {
     units::meters_per_second_t xspeed,
     units::meters_per_second_t yspeed,
     units::radians_per_second_t rotspeed,
-    bool fieldRelative
+    bool fieldRelative,
+    bool tracking
   );
 
  private:
@@ -142,6 +147,24 @@ class Drive : public frc2::SubsystemBase {
     frc::SwerveModulePosition{(units::meter_t)(m_brDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
      (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
   }, frc::Pose2d{}};
+
+  nt::NetworkTableInstance ntinst;
+
+  frc::SwerveDrivePoseEstimator<4> m_targetPoseEstimator{m_DriveKinematics, frc::Rotation2d{}, {
+    frc::SwerveModulePosition{(units::meter_t)(m_flDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
+     (units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
+    frc::SwerveModulePosition{(units::meter_t)(m_frDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
+     (units::radian_t)(m_frRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
+    frc::SwerveModulePosition{(units::meter_t)(m_blDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
+     (units::radian_t)(m_blRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
+    frc::SwerveModulePosition{(units::meter_t)(m_brDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
+     (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
+  }, frc::Pose2d{}};
+
+  frc::ProfiledPIDController<units::meters> m_translationXPID{0.0, 0.0, 0.0, {1_mps, 1_mps_sq}};
+  frc::ProfiledPIDController<units::meters> m_translationYPID{0.0, 0.0, 0.0, {1_mps, 1_mps_sq}};
+  frc::ProfiledPIDController<units::radians> m_rotationPID{0.0, 0.0, 0.0, {1_rad_per_s, 1_rad_per_s_sq}};
+  frc::Timer m_timer;
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

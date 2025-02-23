@@ -9,7 +9,14 @@
 #include <frc2/command/SubsystemBase.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/Commands.h>
+#include <frc2/command/FunctionalCommand.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/controller/ProfiledPIDController.h>
+#include <frc/controller/ElevatorFeedforward.h>
+#include <units/length.h>
+#include <units/velocity.h>
+#include <units/acceleration.h>
+#include <units/voltage.h>
 
 #include <rev/SparkMax.h>
 
@@ -22,6 +29,11 @@ class Elevator : public frc2::SubsystemBase {
   frc2::CommandPtr coralOutCommand();
   frc2::CommandPtr coralInCommand();
 
+  frc2::CommandPtr firstPositionCommand();
+  frc2::CommandPtr secondPositionCommand();
+  frc2::CommandPtr thirdPositionCommand();
+  frc2::CommandPtr fourthPositionCommand();
+
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -31,6 +43,11 @@ class Elevator : public frc2::SubsystemBase {
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 
-  rev::spark::SparkMax m_elevatorMotor {OperatorConstants::k_elevator_id, rev::spark::SparkMax::MotorType::kBrushless};
-  rev::spark::SparkMax m_coralMotor {OperatorConstants::k_coral_id, rev::spark::SparkMax::MotorType::kBrushless};
+  units::meter_t elevatorPosition = 0.0_m;
+
+  frc::ProfiledPIDController<units::meters> m_elevatorPID{0.0, 0.0, 0.0, {1_mps, 1_mps_sq}};
+  frc::ElevatorFeedforward m_elevatorFF{0.0_V, 0.0_V, 0.0_V / 1_mps};
+
+  rev::spark::SparkMax m_elevatorMotor{OperatorConstants::k_elevator_id, rev::spark::SparkMax::MotorType::kBrushless};
+  rev::spark::SparkMax m_coralMotor{OperatorConstants::k_coral_id, rev::spark::SparkMax::MotorType::kBrushless};
 };
