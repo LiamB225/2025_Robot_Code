@@ -34,6 +34,8 @@ class Elevator : public frc2::SubsystemBase {
   frc2::CommandPtr thirdPositionCommand();
   frc2::CommandPtr fourthPositionCommand();
 
+  units::meter_t elevatorPosition = 0.0_m;
+
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -43,7 +45,7 @@ class Elevator : public frc2::SubsystemBase {
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 
-  units::meter_t elevatorPosition = 0.0_m;
+  
 
   frc::ProfiledPIDController<units::meters> m_elevatorPID{0.0, 0.0, 0.0, {1_mps, 1_mps_sq}};
   frc::ElevatorFeedforward m_elevatorFF{0.0_V, 0.0_V, 0.0_V / 1_mps};

@@ -25,6 +25,7 @@
 #include <cmath>
 #include <math.h>
 #include <frc/DriverStation.h>
+#include <frc/smartdashboard/Field2d.h>
 
 #include <units/length.h>
 #include <units/velocity.h>
@@ -55,8 +56,8 @@ class Drive : public frc2::SubsystemBase {
     std::function<double(void)> rot_power
   );
 
-  frc2::CommandPtr ScoreRightCommand();
-  frc2::CommandPtr ScoreLeftCommand();
+  frc2::CommandPtr ScoreRightCommand(std::function<double(void)> height);
+  frc2::CommandPtr ScoreLeftCommand(std::function<double(void)> height);
 
   void resetPosition(frc::Pose2d m_pose);
 
@@ -75,13 +76,13 @@ class Drive : public frc2::SubsystemBase {
   );
 
  private:
-  units::meters_per_second_t kRobotMaxSpeed = 3_mps;
-  units::radians_per_second_t kRobotRotMaxSpeed = 4_rad_per_s;
+  units::meters_per_second_t kRobotMaxSpeed = 1_mps;
+  units::radians_per_second_t kRobotRotMaxSpeed = 1_rad_per_s;
   frc::SlewRateLimiter<units::scalar> XRateLimiter{3 / 1_s};
   frc::SlewRateLimiter<units::scalar> YRateLimiter{3 / 1_s};
   frc::SlewRateLimiter<units::scalar> RotRateLimiter{3 / 1_s};
 
-  units::meters_per_second_t kMaxSpeed = 3_mps;
+  units::meters_per_second_t kMaxSpeed = 1_mps;
   units::radians_per_second_t kRotMaxSpeed = 6.28_rad_per_s;
   units::radians_per_second_squared_t kRotMaxAccel = 10_rad_per_s_sq;
 
@@ -105,7 +106,7 @@ class Drive : public frc2::SubsystemBase {
   rev::spark::SparkMax m_flRotMotor {OperatorConstants::k_fl_rot_id, rev::spark::SparkMax::MotorType::kBrushless};
   ctre::phoenix6::hardware::CANcoder m_flRotEncoder {OperatorConstants::k_fl_rot_encoder, "rio"};
   frc::PIDController m_flDrivePID {0.71452, 0.0, 0.0};
-  frc::ProfiledPIDController<units::radians> m_flRotPID {2.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
+  frc::ProfiledPIDController<units::radians> m_flRotPID {3.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
   frc::SimpleMotorFeedforward<units::meters> m_flDriveFF {0.42325_V, 3.0308_V / 1_mps, 0.45131_V / 1_mps_sq};
   frc::SimpleMotorFeedforward<units::radians> m_flRotFF {0.45_V, 0.2_V / 1_rad_per_s};
 
@@ -114,7 +115,7 @@ class Drive : public frc2::SubsystemBase {
   rev::spark::SparkMax m_frRotMotor {OperatorConstants::k_fr_rot_id, rev::spark::SparkMax::MotorType::kBrushless};
   ctre::phoenix6::hardware::CANcoder m_frRotEncoder {OperatorConstants::k_fr_rot_encoder, "rio"};
   frc::PIDController m_frDrivePID {0.38831, 0.0, 0.0};
-  frc::ProfiledPIDController<units::radians> m_frRotPID {2.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
+  frc::ProfiledPIDController<units::radians> m_frRotPID {3.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
   frc::SimpleMotorFeedforward<units::meters> m_frDriveFF {0.40994_V, 3.061_V / 1_mps, 0.50163_V / 1_mps_sq};
   frc::SimpleMotorFeedforward<units::radians> m_frRotFF {0.45_V, 0.2_V / 1_rad_per_s};
 
@@ -123,7 +124,7 @@ class Drive : public frc2::SubsystemBase {
   rev::spark::SparkMax m_blRotMotor {OperatorConstants::k_bl_rot_id, rev::spark::SparkMax::MotorType::kBrushless};
   ctre::phoenix6::hardware::CANcoder m_blRotEncoder {OperatorConstants::k_bl_rot_encoder, "rio"};
   frc::PIDController m_blDrivePID {1.1032, 0.0, 0.0};
-  frc::ProfiledPIDController<units::radians> m_blRotPID {2.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
+  frc::ProfiledPIDController<units::radians> m_blRotPID {3.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
   frc::SimpleMotorFeedforward<units::meters> m_blDriveFF {0.33652_V, 3.024_V / 1_mps, 0.29702_V / 1_mps_sq};
   frc::SimpleMotorFeedforward<units::radians> m_blRotFF {0.45_V, 0.2_V / 1_rad_per_s};
 
@@ -132,7 +133,7 @@ class Drive : public frc2::SubsystemBase {
   rev::spark::SparkMax m_brRotMotor {OperatorConstants::k_br_rot_id, rev::spark::SparkMax::MotorType::kBrushless};
   ctre::phoenix6::hardware::CANcoder m_brRotEncoder {OperatorConstants::k_br_rot_encoder, "rio"};
   frc::PIDController m_brDrivePID {0.74162, 0.0, 0.0};
-  frc::ProfiledPIDController<units::radians> m_brRotPID {2.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
+  frc::ProfiledPIDController<units::radians> m_brRotPID {3.0, 0.0, 0.05, {kRotMaxSpeed, kRotMaxAccel}};
   frc::SimpleMotorFeedforward<units::meters> m_brDriveFF {0.32866_V, 3.1497_V / 1_mps, 0.32601_V / 1_mps_sq};
   frc::SimpleMotorFeedforward<units::radians> m_brRotFF {0.4_V, 0.2_V / 1_rad_per_s};
 
@@ -147,6 +148,8 @@ class Drive : public frc2::SubsystemBase {
     frc::SwerveModulePosition{(units::meter_t)(m_brDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
      (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
   }, frc::Pose2d{}};
+
+  frc::Field2d m_field;
 
   nt::NetworkTableInstance ntinst;
 

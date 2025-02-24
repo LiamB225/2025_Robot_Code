@@ -40,34 +40,44 @@ frc2::CommandPtr Elevator::firstPositionCommand() {
 
 frc2::CommandPtr Elevator::secondPositionCommand() {
     return this->RunOnce(
-        [this]() {elevatorPosition = 0.0_m;}
+        [this]() {elevatorPosition = 33.0_m;}
     );
 }
 
 frc2::CommandPtr Elevator::thirdPositionCommand() {
     return this->RunOnce(
-        [this]() {elevatorPosition = 0.0_m;}
+        [this]() {elevatorPosition = 60.0_m;}
     );
 }
 
 frc2::CommandPtr Elevator::fourthPositionCommand() {
     return this->RunOnce(
-        [this]() {elevatorPosition = 0.0_m;}
+        [this]() {elevatorPosition = 100.0_m;}
     );
 }
 
 frc2::CommandPtr Elevator::coralOutCommand() {
-    return this->RunOnce(
-        [this]() {m_coralMotor.Set(1.0);}
-    ).FinallyDo(
-        [this]() {m_coralMotor.Set(0.0);}
+    return frc2::cmd::Sequence(
+        frc2::cmd::RunOnce(
+            [this]() {m_coralMotor.Set(0.5);}
+        ),
+        frc2::cmd::Run(
+            [this]() {}
+        ).FinallyDo(
+            [this]() {m_coralMotor.Set(0.0);}
+        )
     );
 }
 
 frc2::CommandPtr Elevator::coralInCommand() {
-    return this->RunOnce(
-        [this]() {m_coralMotor.Set(-1.0);}
-    ).FinallyDo(
-        [this]() {m_coralMotor.Set(0.0);}
+    return frc2::cmd::Sequence(
+        frc2::cmd::RunOnce(
+            [this]() {m_coralMotor.Set(-1.0);}
+        ),
+        frc2::cmd::Run(
+            [this]() {}
+        ).FinallyDo(
+            [this]() {m_coralMotor.Set(0.0);}
+        )
     );
 }
