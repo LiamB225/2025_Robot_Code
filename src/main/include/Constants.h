@@ -17,6 +17,7 @@
 namespace OperatorConstants {
 
 inline constexpr int kDriverControllerPort = 0;
+inline constexpr int kSecondaryControllerPort = 1;
 
 constexpr int k_fl_drive_id = 1;
 constexpr int k_fl_rot_id = 2;
@@ -30,4 +31,6 @@ constexpr int k_fl_rot_encoder = 9;
 constexpr int k_fr_rot_encoder = 10;
 constexpr int k_bl_rot_encoder = 11;
 constexpr int k_br_rot_encoder = 12;
+constexpr int k_elevator_id = 13;
+constexpr int k_coral_id = 14;
 }  // namespace OperatorConstants

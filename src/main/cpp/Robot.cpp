@@ -6,7 +6,15 @@
 
 #include <frc2/command/CommandScheduler.h>
 
-Robot::Robot() {}
+Robot::Robot() {
+  for (int port = 5800; port <= 5809; port++) {
+    wpi::PortForwarder::GetInstance().Add(port, "limelight-primary.local", port);
+	}
+  for (int port = 5800; port <= 5809; port++) {
+    wpi::PortForwarder::GetInstance().Add(port+10, "limelight-secondary.local", port);
+  }
+  frc::SmartDashboard::PutData("command", &frc2::CommandScheduler::GetInstance());
+}
 
 /**
  * This function is called every 20 ms, no matter the mode. Use
@@ -37,7 +45,7 @@ void Robot::AutonomousInit() {
   m_autonomousCommand = m_container.GetAutonomousCommand();
 
   if (m_autonomousCommand) {
-    m_autonomousCommand->Schedule();
+    m_autonomousCommand.value()->Schedule();
   }
 }
 
@@ -49,7 +57,7 @@ void Robot::TeleopInit() {
   // continue until interrupted by another command, remove
   // this line or comment it out.
   if (m_autonomousCommand) {
-    m_autonomousCommand->Cancel();
+    m_autonomousCommand.value()->Cancel();
   }
 }
 
