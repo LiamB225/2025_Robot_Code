@@ -47,8 +47,8 @@ class Elevator : public frc2::SubsystemBase {
 
   
 
-  frc::ProfiledPIDController<units::meters> m_elevatorPID{0.0, 0.0, 0.0, {1_mps, 1_mps_sq}};
-  frc::ElevatorFeedforward m_elevatorFF{0.0_V, 0.0_V, 0.0_V / 1_mps};
+  frc::ProfiledPIDController<units::meters> m_elevatorPID{0.093383, 0.0, 0.0, {50_mps, 50_mps_sq}};
+  frc::ElevatorFeedforward m_elevatorFF{0.24579_V, 0.26331_V, 0.12691_V / 1_mps, 0.02155_V / 1_mps_sq};
 
   rev::spark::SparkMax m_elevatorMotor{OperatorConstants::k_elevator_id, rev::spark::SparkMax::MotorType::kBrushless};
   rev::spark::SparkMax m_coralMotor{OperatorConstants::k_coral_id, rev::spark::SparkMax::MotorType::kBrushless};

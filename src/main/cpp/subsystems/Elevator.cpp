@@ -12,23 +12,24 @@ Elevator::Elevator() {
 // This method will be called once per scheduler run
 void Elevator::Periodic() {
     frc::SmartDashboard::PutNumber("Elevator Position", m_elevatorMotor.GetEncoder().GetPosition());
+    frc::SmartDashboard::PutNumber("Elevator Goal", elevatorPosition.value());
 
-    // units::volt_t elevatorPIDVoltage = (units::volt_t)(m_elevatorPID.Calculate((units::meter_t)(m_coralMotor.GetEncoder().GetPosition()), elevatorPosition));
-    // units::volt_t elevatorFFVoltage = m_elevatorFF.Calculate(m_elevatorPID.GetSetpoint().velocity);
-    // m_elevatorMotor.SetVoltage(elevatorPIDVoltage + elevatorFFVoltage);
+    units::volt_t elevatorPIDVoltage = (units::volt_t)(m_elevatorPID.Calculate((units::meter_t)(m_elevatorMotor.GetEncoder().GetPosition()), elevatorPosition));
+    units::volt_t elevatorFFVoltage = m_elevatorFF.Calculate(m_elevatorPID.GetSetpoint().velocity);
+    frc::SmartDashboard::PutNumber("elevator FF", elevatorFFVoltage.value());
+    frc::SmartDashboard::PutNumber("elevator PID", elevatorPIDVoltage.value());
+    m_elevatorMotor.SetVoltage(elevatorPIDVoltage + elevatorFFVoltage);
 }
 
 frc2::CommandPtr Elevator::raiseElevatorCommand() {
-    return this->RunEnd(
-        [this]() {m_elevatorMotor.Set(0.5);},
-        [this]() {m_elevatorMotor.Set(0.0);}
+    return this->Run(
+        [this]() {elevatorPosition += 0.2_m;}
     );
 }
 
 frc2::CommandPtr Elevator::lowerElevatorCommand() {
-    return this->RunEnd(
-        [this]() {m_elevatorMotor.Set(-0.5);},
-        [this]() {m_elevatorMotor.Set(0.0);}
+    return this->Run(
+        [this]() {elevatorPosition -= 0.2_m;}
     );
 }
 
