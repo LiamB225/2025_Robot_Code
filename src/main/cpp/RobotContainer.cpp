@@ -17,7 +17,6 @@ RobotContainer::RobotContainer() {
 
   autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
-  
 
   // Configure the button bindings
   ConfigureBindings();

@@ -58,27 +58,15 @@ frc2::CommandPtr Elevator::fourthPositionCommand() {
 }
 
 frc2::CommandPtr Elevator::coralOutCommand() {
-    return frc2::cmd::Sequence(
-        frc2::cmd::RunOnce(
-            [this]() {m_coralMotor.Set(0.5);}
-        ),
-        frc2::cmd::Run(
-            [this]() {}
-        ).FinallyDo(
-            [this]() {m_coralMotor.Set(0.0);}
-        )
+    return this->StartEnd(
+        [this]() {m_coralMotor.Set(1.0);},
+        [this]() {m_coralMotor.Set(0.0);}
     );
 }
 
 frc2::CommandPtr Elevator::coralInCommand() {
-    return frc2::cmd::Sequence(
-        frc2::cmd::RunOnce(
-            [this]() {m_coralMotor.Set(-1.0);}
-        ),
-        frc2::cmd::Run(
-            [this]() {}
-        ).FinallyDo(
-            [this]() {m_coralMotor.Set(0.0);}
-        )
+    return this->StartEnd(
+        [this]() {m_coralMotor.Set(-1.0);},
+        [this]() {m_coralMotor.Set(0.0);}
     );
 }

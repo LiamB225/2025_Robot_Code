@@ -6,6 +6,7 @@
 
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
+#include <frc/DigitalInput.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
 
 #include "Constants.h"
@@ -37,6 +38,9 @@ class RobotContainer {
   frc2::CommandXboxController m_secondaryController{
     OperatorConstants::kSecondaryControllerPort
   };
+
+  frc::DigitalInput m_coralSensor{OperatorConstants::k_sensor_id};
+  frc2::Trigger coralTrigger{[this]() { return m_coralSensor.Get();}};
 
   // The robot's subsystems are defined here...
   ExampleSubsystem m_subsystem;

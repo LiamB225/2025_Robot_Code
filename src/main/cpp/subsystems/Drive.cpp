@@ -67,9 +67,7 @@ void Drive::Periodic() {
      (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
     });
 
-    double gyrovalues[6];
-    gyrovalues[0] = m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value();
-    gyrovalues[1, 2, 3, 4, 5] = 0.0;
+    double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
     ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
     if(ntinst.GetTable("limelight-primary")->GetNumber("tv", 0.0) == 1) {
         std::vector<double> pos1(6);
@@ -83,11 +81,11 @@ void Drive::Periodic() {
     //frc::Pose2d limelightPosition2{(units::meter_t)(pos2[0]), (units::meter_t)(pos2[1]), frc::Rotation2d{(units::degree_t)(pos2[5])}};
     //m_poseEstimator.AddVisionMeasurement(limelightPosition2, frc::Timer::GetTimestamp());
 
-    std::vector<double> pos(6);
-    pos = ntinst.GetTable("limelight-primary")->GetNumberArray("botpose_targetspace", std::vector<double>(6));
-    frc::SmartDashboard::PutNumber("X", pos[2]);
-    frc::SmartDashboard::PutNumber("Y", -pos[0]);
-    frc::SmartDashboard::PutNumber("ROT", -pos[4]);
+    // std::vector<double> pos(6);
+    // pos = ntinst.GetTable("limelight-primary")->GetNumberArray("botpose_targetspace", std::vector<double>(6));
+    // frc::SmartDashboard::PutNumber("X", pos[2]);
+    // frc::SmartDashboard::PutNumber("Y", -pos[0]);
+    // frc::SmartDashboard::PutNumber("ROT", -pos[4]);
 
     m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
 }
@@ -173,9 +171,7 @@ frc2::CommandPtr Drive::driveCommand(
 //Auto Functions
 void Drive::resetPosition(frc::Pose2d m_pose) {
     m_poseEstimator.ResetPose(m_pose);
-    double gyrovalues[6];
-    gyrovalues[0] = m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value();
-    gyrovalues[1, 2, 3, 4, 5] = 0.0;
+    double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
     ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
     ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
     ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 2);
