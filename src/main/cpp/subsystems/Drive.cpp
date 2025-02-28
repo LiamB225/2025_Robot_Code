@@ -33,17 +33,16 @@ Drive::Drive() {
         ),
         pathplanner::RobotConfig::fromGUISettings(),
         []() {
-            auto alliance = frc::DriverStation::GetAlliance();
-            if (alliance) {
-                return alliance.value() == frc::DriverStation::Alliance::kRed;
-            }
             return false;
         },
         this
     );
 
     ntinst = nt::NetworkTableInstance::GetDefault();
+    double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
     ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
+    ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
+    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 2);
 
     // m_translationXPID.SetTolerance(0.01_m);
     // m_translationYPID.SetTolerance(0.01_m);
@@ -208,7 +207,13 @@ void Drive::SwerveDrive(
     bool fieldRelative,
     bool tracking
 ) {
-    frc::ChassisSpeeds speeds{xspeed, yspeed, rotspeed};
+    frc::ChassisSpeeds speeds{};
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed && fieldRelative) {
+        speeds = {-xspeed, -yspeed, rotspeed};
+    }
+    else {
+        speeds = {xspeed, yspeed, rotspeed};
+    }
     frc::Rotation2d angle{};
     /*tracking ? angle = m_targetPoseEstimator.GetEstimatedPosition().Rotation() :*/ angle = m_poseEstimator.GetEstimatedPosition().Rotation();
     auto states = m_DriveKinematics.ToSwerveModuleStates(frc::ChassisSpeeds::Discretize(

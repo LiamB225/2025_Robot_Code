@@ -13,6 +13,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/controller/ElevatorFeedforward.h>
+#include <frc/DigitalInput.h>
 #include <units/length.h>
 #include <units/velocity.h>
 #include <units/acceleration.h>
@@ -28,6 +29,8 @@ class Elevator : public frc2::SubsystemBase {
   frc2::CommandPtr lowerElevatorCommand();
   frc2::CommandPtr coralOutCommand();
   frc2::CommandPtr coralInCommand();
+  frc2::CommandPtr shootCoralCommand();
+  frc2::CommandPtr automaticCoralGrabCommand();
 
   frc2::CommandPtr firstPositionCommand();
   frc2::CommandPtr secondPositionCommand();
@@ -47,10 +50,9 @@ class Elevator : public frc2::SubsystemBase {
 
   
 
-  frc::ProfiledPIDController<units::meters> m_elevatorPID{0.093383, 0.0, 0.0, {50_mps, 50_mps_sq}};
+  frc::ProfiledPIDController<units::meters> m_elevatorPID{0.093383, 0.0, 0.0, {70_mps, 70_mps_sq}};
   frc::ElevatorFeedforward m_elevatorFF{0.24579_V, 0.26331_V, 0.12691_V / 1_mps, 0.02155_V / 1_mps_sq};
 
   rev::spark::SparkMax m_elevatorMotor{OperatorConstants::k_elevator_id, rev::spark::SparkMax::MotorType::kBrushless};
   rev::spark::SparkMax m_coralMotor{OperatorConstants::k_coral_id, rev::spark::SparkMax::MotorType::kBrushless};
-  frc::DigitalInput m_coralSensor{OperatorConstants::k_sensor_id};
 };

@@ -59,14 +59,28 @@ frc2::CommandPtr Elevator::fourthPositionCommand() {
 
 frc2::CommandPtr Elevator::coralOutCommand() {
     return this->StartEnd(
-        [this]() {m_coralMotor.Set(1.0);},
+        [this]() {m_coralMotor.Set(0.5);},
         [this]() {m_coralMotor.Set(0.0);}
     );
 }
 
 frc2::CommandPtr Elevator::coralInCommand() {
     return this->StartEnd(
-        [this]() {m_coralMotor.Set(-1.0);},
+        [this]() {m_coralMotor.Set(-0.5);},
         [this]() {m_coralMotor.Set(0.0);}
+    );
+}
+
+frc2::CommandPtr Elevator::shootCoralCommand() {
+    return this->StartEnd(
+        [this]() {m_coralMotor.Set(1.0);},
+        [this]() {m_coralMotor.Set(0.0);}
+    );
+}
+
+frc2::CommandPtr Elevator::automaticCoralGrabCommand() {
+    return this->RunEnd(
+        [this]() {},
+        [this]() {}
     );
 }
