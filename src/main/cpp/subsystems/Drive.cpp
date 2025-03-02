@@ -38,11 +38,20 @@ Drive::Drive() {
         this
     );
 
-    ntinst = nt::NetworkTableInstance::GetDefault();
-    double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
-    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
-    ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
-    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 2);
+    // if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+    //     gyro.SetGyroAngle(frc::ADIS16470_IMU::IMUAxis::kYaw, 0_deg);
+    //     m_poseEstimator.ResetRotation(frc::Rotation2d{0_deg});
+    // }
+    // else {
+    //     gyro.SetGyroAngle(frc::ADIS16470_IMU::IMUAxis::kYaw, 180_deg);
+    //     m_poseEstimator.ResetRotation(frc::Rotation2d{180_deg});
+    // }
+
+    // ntinst = nt::NetworkTableInstance::GetDefault();
+    // double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
+    // ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
+    // ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
+    // ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 2);
 
     // m_translationXPID.SetTolerance(0.01_m);
     // m_translationYPID.SetTolerance(0.01_m);
@@ -66,14 +75,12 @@ void Drive::Periodic() {
      (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
     });
 
-    double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
-    ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
-    if(ntinst.GetTable("limelight-primary")->GetNumber("tv", 0.0) == 1) {
-        std::vector<double> pos1(6);
-        pos1 = ntinst.GetTable("limelight-primary")->GetNumberArray("botpose_orb_wpiblue", std::vector<double>(6));
-        frc::Pose2d limelightPosition1{(units::meter_t)(pos1[0]), (units::meter_t)(pos1[1]), frc::Rotation2d{(units::degree_t)(pos1[5])}};
-        m_poseEstimator.AddVisionMeasurement(limelightPosition1, frc::Timer::GetTimestamp());
-    }
+    // if(ntinst.GetTable("limelight-primary")->GetNumber("tv", 0.0) == 1) {
+    //     std::vector<double> pos1(6);
+    //     pos1 = ntinst.GetTable("limelight-primary")->GetNumberArray("botpose_orb_wpiblue", std::vector<double>(6));
+    //     frc::Pose2d limelightPosition1{(units::meter_t)(pos1[0]), (units::meter_t)(pos1[1]), frc::Rotation2d{(units::degree_t)(pos1[5])}};
+    //     m_poseEstimator.AddVisionMeasurement(limelightPosition1, frc::Timer::GetTimestamp());
+    // }
     
     //std::vector<double> pos2(6);
     //pos2 = ntinst.GetTable("limelight-secondary")->GetNumberArray("botpose_wpiblue", std::vector<double>(6));
@@ -170,10 +177,10 @@ frc2::CommandPtr Drive::driveCommand(
 //Auto Functions
 void Drive::resetPosition(frc::Pose2d m_pose) {
     m_poseEstimator.ResetPose(m_pose);
-    double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
-    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
-    ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
-    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 2);
+    // double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
+    // ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
+    // ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
+    // ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 2);
 }
 
 void Drive::autoDrive(
