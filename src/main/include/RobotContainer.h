@@ -43,6 +43,5 @@ class RobotContainer {
   Drive m_drive;
   Elevator m_elevator;
 
-
   void ConfigureBindings();
 };
