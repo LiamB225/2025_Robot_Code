@@ -19,6 +19,9 @@ void Elevator::Periodic() {
     frc::SmartDashboard::PutNumber("elevator FF", elevatorFFVoltage.value());
     frc::SmartDashboard::PutNumber("elevator PID", elevatorPIDVoltage.value());
     m_elevatorMotor.SetVoltage(elevatorPIDVoltage + elevatorFFVoltage);
+
+    frc::SmartDashboard::PutBoolean("Barrier", m_coralBarrier.Get());
+    frc::SmartDashboard::PutBoolean("Sensor", m_coralSensor.Get());
 }
 
 frc2::CommandPtr Elevator::raiseElevatorCommand() {

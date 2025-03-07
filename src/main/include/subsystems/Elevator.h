@@ -55,4 +55,6 @@ class Elevator : public frc2::SubsystemBase {
 
   rev::spark::SparkMax m_elevatorMotor{OperatorConstants::k_elevator_id, rev::spark::SparkMax::MotorType::kBrushless};
   rev::spark::SparkMax m_coralMotor{OperatorConstants::k_coral_id, rev::spark::SparkMax::MotorType::kBrushless};
+  frc::DigitalInput m_coralSensor{OperatorConstants::k_sensor_id};
+  frc::DigitalInput m_coralBarrier{OperatorConstants::k_barrier_id};
 };

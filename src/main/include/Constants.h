@@ -34,4 +34,5 @@ constexpr int k_br_rot_encoder = 12;
 constexpr int k_elevator_id = 13;
 constexpr int k_coral_id = 14;
 constexpr int k_sensor_id = 0;
+constexpr int k_barrier_id = 1;
 }  // namespace OperatorConstants
