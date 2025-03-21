@@ -9,6 +9,7 @@ Drive::Drive() {
     m_frRotPID.EnableContinuousInput(-(units::radian_t)(M_PI), (units::radian_t)(M_PI));
     m_blRotPID.EnableContinuousInput(-(units::radian_t)(M_PI), (units::radian_t)(M_PI));
     m_brRotPID.EnableContinuousInput(-(units::radian_t)(M_PI), (units::radian_t)(M_PI));
+    m_rotationPID.EnableContinuousInput(-M_PI, M_PI);
     frc::SmartDashboard::PutData("FLROT PID Controller", &m_flRotPID);
     frc::SmartDashboard::PutData("FRROT PID Controller", &m_frRotPID);
     frc::SmartDashboard::PutData("BLROT PID Controller", &m_blRotPID);
@@ -17,9 +18,9 @@ Drive::Drive() {
     frc::SmartDashboard::PutData("FRDRIVE PID Controller", &m_frDrivePID);
     frc::SmartDashboard::PutData("BLDRIVE PID Controller", &m_blDrivePID);
     frc::SmartDashboard::PutData("BRDRIVE PID Controller", &m_brDrivePID);
-    // frc::SmartDashboard::PutData("Translation X PID", &m_translationXPID);
-    // frc::SmartDashboard::PutData("Translation Y PID", &m_translationYPID);
-    // frc::SmartDashboard::PutData("Rotation PID", &m_rotationPID);
+    frc::SmartDashboard::PutData("Translation X PID", &m_translationXPID);
+    frc::SmartDashboard::PutData("Translation Y PID", &m_translationYPID);
+    frc::SmartDashboard::PutData("Rotation PID", &m_rotationPID);
 
     //PathPlanner AutoBuilder
     pathplanner::AutoBuilder::configure(
@@ -49,11 +50,11 @@ Drive::Drive() {
     double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
     ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
     ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
-    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 2);
+    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 3);
 
-    // m_translationXPID.SetTolerance(0.01_m);
-    // m_translationYPID.SetTolerance(0.01_m);
-    // m_rotationPID.SetTolerance(0.1_rad);
+    m_translationXPID.SetTolerance(0.01);
+    m_translationYPID.SetTolerance(0.01);
+    m_rotationPID.SetTolerance(0.1);
 
     frc::SmartDashboard::PutData("field", &m_field);
 }
@@ -86,6 +87,9 @@ void Drive::Periodic() {
     //m_poseEstimator.AddVisionMeasurement(limelightPosition2, frc::Timer::GetTimestamp());
 
     m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
+    frc::SmartDashboard::PutNumber("X", m_poseEstimator.GetEstimatedPosition().X().value());
+    frc::SmartDashboard::PutNumber("Y", m_poseEstimator.GetEstimatedPosition().Y().value());
+    frc::SmartDashboard::PutNumber("ROT", m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
 }
 
 
@@ -97,25 +101,205 @@ frc2::CommandPtr Drive::driveCommand(
 ) {
     return this->Run(
         [this, drive_power, strafe_power, rot_power]() {
-            units::meters_per_second_t drive_vel = XRateLimiter.Calculate(frc::ApplyDeadband(drive_power(), 0.05)) * kRobotMaxSpeed;
-            units::meters_per_second_t strafe_vel = YRateLimiter.Calculate(frc::ApplyDeadband(strafe_power(), 0.05)) * kRobotMaxSpeed;
-            units::radians_per_second_t rot_vel = RotRateLimiter.Calculate(frc::ApplyDeadband(rot_power(), 0.05)) * kRobotRotMaxSpeed;
+            units::meters_per_second_t drive_vel = XRateLimiter.Calculate(frc::ApplyDeadband(drive_power(), 0.07)) * kRobotMaxSpeed;
+            units::meters_per_second_t strafe_vel = YRateLimiter.Calculate(frc::ApplyDeadband(strafe_power(), 0.07)) * kRobotMaxSpeed;
+            units::radians_per_second_t rot_vel = RotRateLimiter.Calculate(frc::ApplyDeadband(rot_power(), 0.07)) * kRobotRotMaxSpeed;
 
             SwerveDrive(drive_vel, strafe_vel, rot_vel, true);
         }
     );
 }
 
-frc2::CommandPtr Drive::ScoreLeftCommand(std::function<double(void)> height) {
-    return frc2::cmd::Sequence(
-        frc2::cmd::Run(
-            [this]() {}, {this}
-        )
+
+//Auto Scoring Commands
+frc2::CommandPtr Drive::ScoreLeftCommand() {
+    return this->StartRun(
+        [this]() {
+            double X = m_poseEstimator.GetEstimatedPosition().X().value();
+            double Y = m_poseEstimator.GetEstimatedPosition().Y().value();
+
+            if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+                if(X < 11.893677 && Y > 3.555492 && Y < 4.496308) {
+                    //Red Middle Left
+                    XGoal = 11.519706;
+                    YGoal = 4.07;
+                    RotGoal = 0.0;
+                } else if(X < 11.893677 && Y > 4.496308) {
+                    //Red Top Left
+                    XGoal = 12.369452;
+                    YGoal = 5.39;
+                    RotGoal = -1.0471975512;
+                } else if(X < 11.893677 && Y < 3.555492) {
+                    //Red Bottom Left
+                    XGoal = 12.278098;
+                    YGoal = 2.7118;
+                    RotGoal = 1.0471975512;
+                } else if(X > 11.893677 && Y > 4.496308) {
+                    //Red Top Right
+                    XGoal = 13.839706;
+                    YGoal = 5.34;
+                    RotGoal = -2.09439510239;
+                } else if(X > 11.893677 && Y < 3.555492) {
+                    //Red Bottom Right
+                    XGoal = 13.748352;
+                    YGoal = 2.6618;
+                    RotGoal = 2.09439510239;
+                } else if(X > 11.893677 && Y > 3.555492 && Y < 4.496308) {
+                    //Red Middle Right
+                    XGoal = 14.598098;
+                    YGoal = 3.9818;
+                    RotGoal = 3.14159265359;
+                }
+            }
+            else {
+                if(X < 4.489323 && Y > 3.555492 && Y < 4.496308) {
+                    //Blue Middle Left
+                    XGoal = 2.95;
+                    YGoal = 4.07;
+                    RotGoal = 0.0;
+                } else if(X < 4.489323 && Y > 4.496308) {
+                    //Blue Top Left
+                    XGoal = 3.80;
+                    YGoal = 5.39;
+                    RotGoal = -1.0471975512;
+                } else if(X < 4.489323 && Y < 3.555492) {
+                    //Blue Bottom Left
+                    XGoal = 3.708646;
+                    YGoal = 2.7118;
+                    RotGoal = 1.0471975512;
+                } else if(X > 4.489323 && Y > 4.496308) {
+                    //Blue Top Right
+                    XGoal = 5.27;
+                    YGoal = 5.34;
+                    RotGoal = -2.09439510239;
+                } else if(X > 4.489323 && Y < 3.555492) {
+                    //Blue Bottom Right
+                    XGoal = 5.178646;
+                    YGoal = 2.6618;
+                    RotGoal = 2.09439510239;
+                } else if(X > 4.489323 && Y > 3.555492 && Y < 4.496308) {
+                    //Blue Middle Right
+                    XGoal = 6.028646;
+                    YGoal = 3.9818;
+                    RotGoal = 3.14159265359;
+                }
+            }
+            
+        },
+        [this]() {
+            units::meters_per_second_t drive_vel = (units::meters_per_second_t)(m_translationXPID.Calculate(m_poseEstimator.GetEstimatedPosition().X().value(), XGoal));
+            units::meters_per_second_t strafe_vel = (units::meters_per_second_t)(m_translationYPID.Calculate(m_poseEstimator.GetEstimatedPosition().Y().value(), YGoal));
+            units::radians_per_second_t rot_vel = (units::radians_per_second_t)(m_rotationPID.Calculate(m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value(), RotGoal));
+
+            SwerveDrive(drive_vel, strafe_vel, rot_vel, true);
+        }
+    ).Until(
+        [this]() {
+            if(m_translationXPID.AtSetpoint() && m_translationYPID.AtSetpoint() && m_rotationPID.AtSetpoint()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    );
+}
+
+frc2::CommandPtr Drive::ScoreRightCommand() {
+    return this->StartRun(
+        [this]() {
+            double X = m_poseEstimator.GetEstimatedPosition().X().value();
+            double Y = m_poseEstimator.GetEstimatedPosition().Y().value();
+
+            if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+                if(X < 11.893677 && Y > 3.555492 && Y < 4.496308) {
+                    //Red Middle Left
+                    XGoal = 11.519706;
+                    YGoal = 3.77;
+                    RotGoal = 0.0;
+                } else if(X < 11.893677 && Y > 4.496308) {
+                    //Red Top Left
+                    XGoal = 12.049452;
+                    YGoal = 5.23;
+                    RotGoal = -1.0471975512;
+                } else if(X < 11.893677 && Y < 3.555492) {
+                    //Red Bottom Left
+                    XGoal = 12.508098;
+                    YGoal = 2.5718;
+                    RotGoal = 1.0471975512;
+                } else if(X > 11.893677 && Y > 4.496308) {
+                    //Red Top Right
+                    XGoal = 13.609706;
+                    YGoal = 5.48;
+                    RotGoal = -2.09439510239;
+                } else if(X > 11.893677 && Y < 3.555492) {
+                    //Red Bottom Right
+                    XGoal = 14.068352;
+                    YGoal = 2.8218;
+                    RotGoal = 2.09439510239;
+                } else if(X > 11.893677 && Y > 3.555492 && Y < 4.496308) {
+                    //Red Middle Right
+                    XGoal = 14.598098;
+                    YGoal = 4.2818;
+                    RotGoal = 3.14159265359;
+                }
+            }
+            else {
+                if(X < 4.489323 && Y > 3.555492 && Y < 4.496308) {
+                    //Blue Middle Left
+                    XGoal = 2.95;
+                    YGoal = 3.77;
+                    RotGoal = 0.0;
+                } else if(X < 4.489323 && Y > 4.496308) {
+                    //Blue Top Left
+                    XGoal = 3.48;
+                    YGoal = 5.23;
+                    RotGoal = -1.0471975512;
+                } else if(X < 4.489323 && Y < 3.555492) {
+                    //Blue Bottom Left
+                    XGoal = 3.938646;
+                    YGoal = 2.5718;
+                    RotGoal = 1.0471975512;
+                } else if(X > 4.489323 && Y > 4.496308) {
+                    //Blue Top Right
+                    XGoal = 5.04;
+                    YGoal = 5.48;
+                    RotGoal = -2.09439510239;
+                } else if(X > 4.489323 && Y < 3.555492) {
+                    //Blue Bottom Right
+                    XGoal = 5.498646;
+                    YGoal = 2.8218;
+                    RotGoal = 2.09439510239;
+                } else if(X > 4.489323 && Y > 3.555492 && Y < 4.496308) {
+                    //Blue Middle Right
+                    XGoal = 6.028646;
+                    YGoal = 4.2818;
+                    RotGoal = 3.14159265359;
+                }
+            }
+            
+        },
+        [this]() {
+            units::meters_per_second_t drive_vel = (units::meters_per_second_t)(m_translationXPID.Calculate(m_poseEstimator.GetEstimatedPosition().X().value(), XGoal));
+            units::meters_per_second_t strafe_vel = (units::meters_per_second_t)(m_translationYPID.Calculate(m_poseEstimator.GetEstimatedPosition().Y().value(), YGoal));
+            units::radians_per_second_t rot_vel = (units::radians_per_second_t)(m_rotationPID.Calculate(m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value(), RotGoal));
+
+            SwerveDrive(drive_vel, strafe_vel, rot_vel, true);
+        }
+    ).Until(
+        [this]() {
+            if(m_translationXPID.AtSetpoint() && m_translationYPID.AtSetpoint() && m_rotationPID.AtSetpoint()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
     );
 }
 
 
-//Auto Functions
+//Autonomous Functions
 void Drive::resetPosition(frc::Pose2d m_pose) {
     frc::Rotation2d angle{gyro.GetAngle()};
     m_poseEstimator.ResetPosition(angle, {
@@ -132,7 +316,7 @@ void Drive::resetPosition(frc::Pose2d m_pose) {
     double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
     ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
     ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
-    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 2);
+    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 3);
 }
 
 void Drive::autoDrive(

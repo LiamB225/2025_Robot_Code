@@ -24,6 +24,7 @@ void Elevator::Periodic() {
     frc::SmartDashboard::PutBoolean("Sensor", m_coralSensor.Get());
 }
 
+//Elevator Commands
 frc2::CommandPtr Elevator::raiseElevatorCommand() {
     return this->Run(
         [this]() {elevatorPosition += 0.2_m;}
@@ -44,13 +45,13 @@ frc2::CommandPtr Elevator::firstPositionCommand() {
 
 frc2::CommandPtr Elevator::secondPositionCommand() {
     return this->RunOnce(
-        [this]() {elevatorPosition = 33.0_m;}
+        [this]() {elevatorPosition = 50.3_m;}
     );
 }
 
 frc2::CommandPtr Elevator::thirdPositionCommand() {
     return this->RunOnce(
-        [this]() {elevatorPosition = 60.0_m;}
+        [this]() {elevatorPosition = 70.8_m;}
     );
 }
 
@@ -59,6 +60,7 @@ frc2::CommandPtr Elevator::fourthPositionCommand() {
         [this]() {elevatorPosition = 100.0_m;}
     );
 }
+
 
 frc2::CommandPtr Elevator::coralOutCommand() {
     return this->StartEnd(
@@ -82,8 +84,14 @@ frc2::CommandPtr Elevator::shootCoralCommand() {
 }
 
 frc2::CommandPtr Elevator::automaticCoralGrabCommand() {
-    return this->RunEnd(
-        [this]() {},
-        [this]() {}
+    return this->Run(
+        [this]() {
+            if(!m_coralBarrier.Get()) {
+                m_coralMotor.Set(0.25);
+            }
+            if(!m_coralSensor.Get()) {
+                m_coralMotor.Set(0.0);
+            }
+        }
     );
 }

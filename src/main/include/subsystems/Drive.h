@@ -56,8 +56,8 @@ class Drive : public frc2::SubsystemBase {
     std::function<double(void)> rot_power
   );
 
-  frc2::CommandPtr ScoreRightCommand(std::function<double(void)> height);
-  frc2::CommandPtr ScoreLeftCommand(std::function<double(void)> height);
+  frc2::CommandPtr ScoreRightCommand();
+  frc2::CommandPtr ScoreLeftCommand();
 
   void resetPosition(frc::Pose2d m_pose);
 
@@ -83,7 +83,7 @@ class Drive : public frc2::SubsystemBase {
 
   units::meters_per_second_t kMaxSpeed = 3_mps;
   units::radians_per_second_t kRotMaxSpeed = 9.42_rad_per_s;
-  units::radians_per_second_squared_t kRotMaxAccel = 10_rad_per_s_sq;
+  units::radians_per_second_squared_t kRotMaxAccel = 100_rad_per_s_sq;
 
   units::meter_t kWheelBase = 0.59055_m;
   units::meter_t kTrackWidth = 0.56515_m;
@@ -149,21 +149,13 @@ class Drive : public frc2::SubsystemBase {
 
   nt::NetworkTableInstance ntinst;
 
-  // frc::SwerveDrivePoseEstimator<4> m_targetPoseEstimator{m_DriveKinematics, frc::Rotation2d{}, {
-  //   frc::SwerveModulePosition{(units::meter_t)(m_flDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
-  //    (units::radian_t)(m_flRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
-  //   frc::SwerveModulePosition{(units::meter_t)(m_frDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
-  //    (units::radian_t)(m_frRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
-  //   frc::SwerveModulePosition{(units::meter_t)(m_blDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
-  //    (units::radian_t)(m_blRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)},
-  //   frc::SwerveModulePosition{(units::meter_t)(m_brDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
-  //    (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
-  // }, frc::Pose2d{}};
+  frc::PIDController m_translationXPID{1.5, 0.0, 0.0};
+  frc::PIDController m_translationYPID{1.5, 0.0, 0.0};
+  frc::PIDController m_rotationPID{1.5, 0.0, 0.0};
 
-  // frc::ProfiledPIDController<units::meters> m_translationXPID{0.0, 0.0, 0.0, {1_mps, 1_mps_sq}};
-  // frc::ProfiledPIDController<units::meters> m_translationYPID{0.0, 0.0, 0.0, {1_mps, 1_mps_sq}};
-  // frc::ProfiledPIDController<units::radians> m_rotationPID{0.0, 0.0, 0.0, {1_rad_per_s, 1_rad_per_s_sq}};
-  // frc::Timer m_timer;
+  double XGoal = 3.80;
+  double YGoal = 5.39;
+  double RotGoal = -1.0471975512;
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

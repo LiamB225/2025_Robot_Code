@@ -6,8 +6,6 @@
 
 #include <frc2/command/button/Trigger.h>
 
-#include "commands/Autos.h"
-#include "commands/ExampleCommand.h"
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
@@ -29,26 +27,13 @@ void RobotContainer::ConfigureBindings() {
     [this]() { return -m_driverController.GetRightX(); }
   ));
 
+  m_elevator.SetDefaultCommand(m_elevator.automaticCoralGrabCommand());
   m_driverController.RightTrigger().WhileTrue(m_elevator.coralOutCommand());
   m_driverController.LeftTrigger().WhileTrue(m_elevator.coralInCommand());
   m_driverController.A().WhileTrue(m_elevator.shootCoralCommand());
   
-  // m_driverController.LeftBumper().WhileTrue(frc2::cmd::Parallel(m_drive.ScoreLeftCommand([this]() {
-  //     if(m_elevator.elevatorPosition == 100.0_m) {
-  //       return -0.70;
-  //     }
-  //     else if(m_elevator.elevatorPosition == 60.0_m) {
-  //       return -0.52;
-  //     }
-  //     else {
-  //       return -0.46;
-  //     } 
-  //   }), frc2::cmd::RunOnce([this]() {m_drive.RemoveDefaultCommand();})));
-  // m_driverController.LeftBumper().OnFalse(frc2::cmd::RunOnce([this]() {m_drive.SetDefaultCommand(m_drive.driveCommand(
-  //   [this]() { return -m_driverController.GetLeftY(); },
-  //   [this]() { return -m_driverController.GetLeftX(); },
-  //   [this]() { return -m_driverController.GetRightX(); }
-  // ));}));
+  m_driverController.LeftBumper().WhileTrue(m_drive.ScoreLeftCommand().AndThen(m_elevator.shootCoralCommand()));
+  m_driverController.RightBumper().WhileTrue(m_drive.ScoreRightCommand().AndThen(m_elevator.shootCoralCommand()));
 
   m_secondaryController.RightBumper().WhileTrue(m_elevator.raiseElevatorCommand());
   m_secondaryController.LeftBumper().WhileTrue(m_elevator.lowerElevatorCommand());

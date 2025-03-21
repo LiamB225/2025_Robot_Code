@@ -9,7 +9,6 @@
 #include <pathplanner/lib/auto/NamedCommands.h>
 
 #include "Constants.h"
-#include "subsystems/ExampleSubsystem.h"
 #include "subsystems/Drive.h"
 #include "subsystems/Elevator.h"
 
@@ -39,7 +38,6 @@ class RobotContainer {
   };
 
   // The robot's subsystems are defined here...
-  ExampleSubsystem m_subsystem;
   Drive m_drive;
   Elevator m_elevator;
 
