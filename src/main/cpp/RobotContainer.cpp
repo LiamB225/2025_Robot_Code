@@ -11,7 +11,8 @@ RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   pathplanner::NamedCommands::registerCommand("FourthElevatorCommand", m_elevator.fourthPositionCommand());
   pathplanner::NamedCommands::registerCommand("FirstElevatorCommand", m_elevator.firstPositionCommand());
-  pathplanner::NamedCommands::registerCommand("IntakeInCommand", m_elevator.shootCoralCommand().WithTimeout(1.5_s));
+  pathplanner::NamedCommands::registerCommand("IntakeInCommand", m_elevator.shootCoralCommand().WithTimeout(0.5_s));
+  pathplanner::NamedCommands::registerCommand("DoNothing", m_drive.DoNothingCommand());
 
   autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);

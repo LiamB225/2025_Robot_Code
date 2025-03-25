@@ -10,9 +10,9 @@ Robot::Robot() {
   for (int port = 5800; port <= 5809; port++) {
     wpi::PortForwarder::GetInstance().Add(port, "limelight-primary.local", port);
 	}
-  for (int port = 5800; port <= 5809; port++) {
-    wpi::PortForwarder::GetInstance().Add(port+10, "limelight-secondary.local", port);
-  }
+  // for (int port = 5800; port <= 5809; port++) {
+  //   wpi::PortForwarder::GetInstance().Add(port+10, "limelight-secondary.local", port);
+  // }
   frc::SmartDashboard::PutData("command", &frc2::CommandScheduler::GetInstance());
 }
 

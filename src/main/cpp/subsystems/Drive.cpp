@@ -39,18 +39,8 @@ Drive::Drive() {
         this
     );
 
-    if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
-        m_poseEstimator.ResetRotation(frc::Rotation2d{0_deg});
-    }
-    else {
-        m_poseEstimator.ResetRotation(frc::Rotation2d{180_deg});
-    }
-
     ntinst = nt::NetworkTableInstance::GetDefault();
-    double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
-    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
-    ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
-    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 3);
+    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 2);
 
     m_translationXPID.SetTolerance(0.01);
     m_translationYPID.SetTolerance(0.01);
@@ -73,6 +63,17 @@ void Drive::Periodic() {
     frc::SwerveModulePosition{(units::meter_t)(m_brDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
      (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
     });
+
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue && seedLimelight) {
+        ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
+        m_poseEstimator.ResetRotation(frc::Rotation2d{180_deg});
+        LimelightHelpers::SetRobotOrientation("limelight-primary", m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0);
+        units::degree_t seedvalue = LimelightHelpers::getBotPoseEstimate_wpiBlue_MegaTag2("limelight-primary").pose.Rotation().Degrees();
+        if(seedvalue > 170_deg || seedvalue < -170_deg) {
+            ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 2);
+            seedLimelight = false;
+        }
+    }
 
     if(ntinst.GetTable("limelight-primary")->GetNumber("tv", 0.0) == 1) {
         std::vector<double> pos1(6);
@@ -313,10 +314,10 @@ void Drive::resetPosition(frc::Pose2d m_pose) {
      (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
     }, m_pose);
 
-    double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
-    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
-    ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
-    ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 3);
+    // double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
+    // ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
+    // ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
+    // ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 3);
 }
 
 void Drive::autoDrive(
@@ -339,6 +340,12 @@ frc::ChassisSpeeds Drive::getRobotRelativeChassisSpeeds() {
     frc::SwerveModuleState{(units::meters_per_second_t)(m_brDriveMotor.GetEncoder().GetVelocity() * M_PI * 0.1016 / (8.14 * 60)),
      (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
     });
+}
+
+frc2::CommandPtr Drive::DoNothingCommand() {
+    return this->Run(
+        [this]() {}
+    );
 }
 
 

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc2/command/CommandPtr.h>
+#include <frc2/command/CommandHelper.h>
 #include <frc2/command/button/CommandXboxController.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
 

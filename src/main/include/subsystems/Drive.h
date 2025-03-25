@@ -9,6 +9,7 @@
 #include "Constants.h"
 
 #include <frc2/command/SubsystemBase.h>
+#include <frc2/command/CommandPtr.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/Commands.h>
 #include <frc2/command/FunctionalCommand.h>
@@ -41,6 +42,8 @@
 #include <pathplanner/lib/config/RobotConfig.h>
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 
+#include "LimelightHelpers.h"
+
 class Drive : public frc2::SubsystemBase {
  public:
   Drive();
@@ -58,6 +61,8 @@ class Drive : public frc2::SubsystemBase {
 
   frc2::CommandPtr ScoreRightCommand();
   frc2::CommandPtr ScoreLeftCommand();
+
+  frc2::CommandPtr DoNothingCommand();
 
   void resetPosition(frc::Pose2d m_pose);
 
@@ -156,6 +161,8 @@ class Drive : public frc2::SubsystemBase {
   double XGoal = 3.80;
   double YGoal = 5.39;
   double RotGoal = -1.0471975512;
+
+  bool seedLimelight = true;
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
