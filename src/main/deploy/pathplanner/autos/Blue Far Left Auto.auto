@@ -26,7 +26,19 @@
         {
           "type": "named",
           "data": {
+            "name": "DoNothing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "IntakeInCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FollowAgain"
           }
         },
         {
@@ -49,22 +61,21 @@
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 2.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DoNothing"
-                }
-              }
-            ]
+            "name": "DoNothing"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FollowAgain"
           }
         },
         {
@@ -84,6 +95,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DoNothing"
           }
         },
         {

@@ -343,8 +343,24 @@ frc::ChassisSpeeds Drive::getRobotRelativeChassisSpeeds() {
 }
 
 frc2::CommandPtr Drive::DoNothingCommand() {
-    return this->Run(
-        [this]() {}
+    return this->RunOnce(
+        [this]() {
+            pathplanner::PPHolonomicDriveController::overrideXYFeedback(
+                []() {return 0_mps;},
+                []() {return 0_mps;}
+            );
+            pathplanner::PPHolonomicDriveController::overrideRotationFeedback(
+                []() {return 0_rad_per_s;}
+            );
+        }
+    );
+}
+
+frc2::CommandPtr Drive::ClearOverridesCommand() {
+    return this->RunOnce(
+        [this]() {
+            pathplanner::PPHolonomicDriveController::clearFeedbackOverrides();
+        }
     );
 }
 

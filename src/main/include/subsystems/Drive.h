@@ -63,6 +63,7 @@ class Drive : public frc2::SubsystemBase {
   frc2::CommandPtr ScoreLeftCommand();
 
   frc2::CommandPtr DoNothingCommand();
+  frc2::CommandPtr ClearOverridesCommand();
 
   void resetPosition(frc::Pose2d m_pose);
 
