@@ -1,0 +1,118 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Blue Right First Path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "FourthElevatorCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DoNothing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeInCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FollowAgain"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Blue Right Second Path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "FirstElevatorCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DoNothing"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FollowAgain"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Blue Right Third Path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "FourthElevatorCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DoNothing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeInCommand"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Blue",
+  "choreoAuto": false
+}

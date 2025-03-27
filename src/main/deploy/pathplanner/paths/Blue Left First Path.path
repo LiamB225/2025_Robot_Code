@@ -8,10 +8,10 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.720242615054101,
-        "y": 5.762913028064108
+        "x": 6.882680038394837,
+        "y": 5.751822136973008
       },
-      "isLocked": true,
+      "isLocked": false,
       "linkedName": null
     },
     {
@@ -20,11 +20,11 @@
         "y": 5.48
       },
       "prevControl": {
-        "x": 5.463058786746651,
-        "y": 5.197921125014141
+        "x": 5.2490983858899405,
+        "y": 5.6170323502616135
       },
       "nextControl": null,
-      "isLocked": true,
+      "isLocked": false,
       "linkedName": "Blue Left 1"
     }
   ],
