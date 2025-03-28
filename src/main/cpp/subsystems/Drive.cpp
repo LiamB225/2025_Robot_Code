@@ -350,7 +350,7 @@ frc2::CommandPtr Drive::DoNothingCommand() {
                 []() {return 0_mps;}
             );
             pathplanner::PPHolonomicDriveController::overrideRotationFeedback(
-                []() {return 0_rad_per_s;}
+                []() {return 0_deg_per_s;}
             );
         }
     );
