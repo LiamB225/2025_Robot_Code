@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 9.97,
-        "y": 1.43
+        "x": 15.914309210526314,
+        "y": 0.7536184210526312
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.414277639259128,
-        "y": 1.3240536757456165
+        "x": 15.303923576349797,
+        "y": 1.4960787458995086
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Red Left 2"
     },
     {
       "anchor": {
-        "x": 12.551127049180327,
-        "y": 2.5924692622950816
+        "x": 14.068352,
+        "y": 2.8218
       },
       "prevControl": {
-        "x": 12.044529267546444,
-        "y": 1.848053918309795
+        "x": 14.419760872854695,
+        "y": 2.354628175252644
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 119.99999999999999
   },
   "reversed": false,
   "folder": "Red Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 125.53767779197425
   },
   "useDefaultConstraints": true
 }

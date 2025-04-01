@@ -75,22 +75,23 @@ void Drive::Periodic() {
         }
     }
 
+    if(frc::DriverStation::IsTeleopEnabled() && teleopLimelight) {
+        ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 3);
+        teleopLimelight = false;
+    }
+
     if(ntinst.GetTable("limelight-primary")->GetNumber("tv", 0.0) == 1) {
         std::vector<double> pos1(6);
         pos1 = ntinst.GetTable("limelight-primary")->GetNumberArray("botpose_orb_wpiblue", std::vector<double>(6));
         frc::Pose2d limelightPosition1{(units::meter_t)(pos1[0]), (units::meter_t)(pos1[1]), frc::Rotation2d{(units::degree_t)(pos1[5])}};
         m_poseEstimator.AddVisionMeasurement(limelightPosition1, frc::Timer::GetTimestamp());
     }
-    
-    //std::vector<double> pos2(6);
-    //pos2 = ntinst.GetTable("limelight-secondary")->GetNumberArray("botpose_wpiblue", std::vector<double>(6));
-    //frc::Pose2d limelightPosition2{(units::meter_t)(pos2[0]), (units::meter_t)(pos2[1]), frc::Rotation2d{(units::degree_t)(pos2[5])}};
-    //m_poseEstimator.AddVisionMeasurement(limelightPosition2, frc::Timer::GetTimestamp());
 
     m_field.SetRobotPose(m_poseEstimator.GetEstimatedPosition());
     frc::SmartDashboard::PutNumber("X", m_poseEstimator.GetEstimatedPosition().X().value());
     frc::SmartDashboard::PutNumber("Y", m_poseEstimator.GetEstimatedPosition().Y().value());
     frc::SmartDashboard::PutNumber("ROT", m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value());
+    frc::SmartDashboard::PutBoolean("Teleop", !teleopLimelight);
 }
 
 
@@ -313,11 +314,6 @@ void Drive::resetPosition(frc::Pose2d m_pose) {
     frc::SwerveModulePosition{(units::meter_t)(m_brDriveMotor.GetEncoder().GetPosition() * M_PI * 0.1016 / 8.14),
      (units::radian_t)(m_brRotEncoder.GetAbsolutePosition().GetValueAsDouble() * M_PI * 2)}
     }, m_pose);
-
-    // double gyrovalues[6] = {m_poseEstimator.GetEstimatedPosition().Rotation().Degrees().value(), 0.0, 0.0, 0.0, 0.0, 0.0};
-    // ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 1);
-    // ntinst.GetTable("limelight-primary")->PutNumberArray("robot_orientation_set", gyrovalues);
-    // ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 3);
 }
 
 void Drive::autoDrive(

@@ -164,6 +164,7 @@ class Drive : public frc2::SubsystemBase {
   double RotGoal = -1.0471975512;
 
   bool seedLimelight = true;
+  bool teleopLimelight = true;
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

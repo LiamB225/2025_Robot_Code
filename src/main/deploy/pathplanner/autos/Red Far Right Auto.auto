@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Right"
+                  "pathName": "Red Right First Path"
                 }
               },
               {
@@ -21,6 +21,86 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DoNothing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeInCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FollowAgain"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Red Right Second Path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "FirstElevatorCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DoNothing"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FollowAgain"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Red Right Third Path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "FourthElevatorCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DoNothing"
           }
         },
         {
