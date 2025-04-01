@@ -37,7 +37,10 @@ void RobotContainer::ConfigureBindings() {
   m_driverController.LeftBumper().WhileTrue(m_drive.ScoreLeftCommand().AndThen(m_elevator.shootCoralCommand()));
   m_driverController.RightBumper().WhileTrue(m_drive.ScoreRightCommand().AndThen(m_elevator.shootCoralCommand()));
 
-  
+  m_driverController.X().WhileTrue(m_climber.ClimbIn());
+  m_driverController.Y().WhileTrue(m_climber.ClimbOut());
+  m_driverController.Start().OnTrue(m_climber.ClimbCommand());
+  m_driverController.B().OnTrue(m_climber.ClimbOutCommand());
 
   m_secondaryController.RightBumper().WhileTrue(m_elevator.raiseElevatorCommand());
   m_secondaryController.LeftBumper().WhileTrue(m_elevator.lowerElevatorCommand());

@@ -9,12 +9,24 @@ Climber::Climber() {
 }
 
 // This method will be called once per scheduler run
-void Climber::Periodic() {}
+void Climber::Periodic() {
+    frc::SmartDashboard::PutNumber("ClimberPostition", m_climberMotor.GetEncoder().GetPosition());
+}
 
 frc2::CommandPtr Climber::ClimbCommand() {
     return this->Run(
         [this]() {
+            units::volt_t PIDVoltage = (units::volt_t)(m_climberPID.Calculate(m_climberMotor.GetEncoder().GetPosition(), 125.0));
+            m_climberMotor.SetVoltage(PIDVoltage);
+        }
+    );
+}
 
+frc2::CommandPtr Climber::ClimbOutCommand() {
+    return this->Run(
+        [this]() {
+            units::volt_t PIDVoltage = (units::volt_t)(m_climberPID.Calculate(m_climberMotor.GetEncoder().GetPosition(), -80.0));
+            m_climberMotor.SetVoltage(PIDVoltage);
         }
     );
 }

@@ -21,6 +21,7 @@ class Climber : public frc2::SubsystemBase {
   Climber();
 
   frc2::CommandPtr ClimbCommand();
+  frc2::CommandPtr ClimbOutCommand();
   frc2::CommandPtr ClimbIn();
   frc2::CommandPtr ClimbOut();
 
@@ -34,5 +35,5 @@ class Climber : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
 
   rev::spark::SparkMax m_climberMotor{OperatorConstants::k_climber_id, rev::spark::SparkMax::MotorType::kBrushless};
-  frc::PIDController m_climberPID{1.0, 0.0, 0.0};
+  frc::PIDController m_climberPID{0.5, 0.0, 0.0};
 };
