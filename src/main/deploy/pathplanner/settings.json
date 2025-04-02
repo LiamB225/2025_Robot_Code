@@ -12,8 +12,8 @@
     "Blue",
     "Red"
   ],
-  "defaultMaxVel": 0.75,
-  "defaultMaxAccel": 0.75,
+  "defaultMaxVel": 1.5,
+  "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 171.887,
   "defaultMaxAngAccel": 171.887,
   "defaultNominalVoltage": 12.0,

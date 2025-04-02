@@ -32,6 +32,7 @@ class Elevator : public frc2::SubsystemBase {
   frc2::CommandPtr coralInCommand();
   frc2::CommandPtr shootCoralCommand();
   frc2::CommandPtr automaticCoralGrabCommand();
+  frc2::CommandPtr autonomousCoralCommand();
 
   frc2::CommandPtr firstPositionCommand();
   frc2::CommandPtr secondPositionCommand();

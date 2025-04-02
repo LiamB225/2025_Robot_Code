@@ -75,10 +75,10 @@ void Drive::Periodic() {
         }
     }
 
-    if(frc::DriverStation::IsTeleopEnabled() && teleopLimelight) {
-        ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 3);
-        teleopLimelight = false;
-    }
+    // if(frc::DriverStation::IsTeleopEnabled() && teleopLimelight) {
+    //     ntinst.GetTable("limelight-primary")->PutNumber("imumode_set", 3);
+    //     teleopLimelight = false;
+    // }
 
     if(ntinst.GetTable("limelight-primary")->GetNumber("tv", 0.0) == 1) {
         std::vector<double> pos1(6);
@@ -106,8 +106,10 @@ frc2::CommandPtr Drive::driveCommand(
             units::meters_per_second_t drive_vel = XRateLimiter.Calculate(frc::ApplyDeadband(drive_power(), 0.07)) * kRobotMaxSpeed;
             units::meters_per_second_t strafe_vel = YRateLimiter.Calculate(frc::ApplyDeadband(strafe_power(), 0.07)) * kRobotMaxSpeed;
             units::radians_per_second_t rot_vel = RotRateLimiter.Calculate(frc::ApplyDeadband(rot_power(), 0.07)) * kRobotRotMaxSpeed;
-
-            SwerveDrive(drive_vel, strafe_vel, rot_vel, true);
+            
+            if(!frc::DriverStation::IsAutonomousEnabled()) {
+                SwerveDrive(drive_vel, strafe_vel, rot_vel, true);
+            }
         }
     );
 }
@@ -121,32 +123,32 @@ frc2::CommandPtr Drive::ScoreLeftCommand() {
             double Y = m_poseEstimator.GetEstimatedPosition().Y().value();
 
             if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
-                if(X < 11.893677 && Y > 3.555492 && Y < 4.496308) {
+                if(X < 13.058902 && Y > 3.555492 && Y < 4.496308) {
                     //Red Middle Left
                     XGoal = 11.519706;
                     YGoal = 4.07;
                     RotGoal = 0.0;
-                } else if(X < 11.893677 && Y > 4.496308) {
+                } else if(X < 13.058902 && Y > 4.496308) {
                     //Red Top Left
                     XGoal = 12.369452;
                     YGoal = 5.39;
                     RotGoal = -1.0471975512;
-                } else if(X < 11.893677 && Y < 3.555492) {
+                } else if(X < 13.058902 && Y < 3.555492) {
                     //Red Bottom Left
                     XGoal = 12.278098;
                     YGoal = 2.7118;
                     RotGoal = 1.0471975512;
-                } else if(X > 11.893677 && Y > 4.496308) {
+                } else if(X > 13.058902 && Y > 4.496308) {
                     //Red Top Right
                     XGoal = 13.839706;
                     YGoal = 5.34;
                     RotGoal = -2.09439510239;
-                } else if(X > 11.893677 && Y < 3.555492) {
+                } else if(X > 13.058902 && Y < 3.555492) {
                     //Red Bottom Right
                     XGoal = 13.748352;
                     YGoal = 2.6618;
                     RotGoal = 2.09439510239;
-                } else if(X > 11.893677 && Y > 3.555492 && Y < 4.496308) {
+                } else if(X > 13.058902 && Y > 3.555492 && Y < 4.496308) {
                     //Red Middle Right
                     XGoal = 14.598098;
                     YGoal = 3.9818;
@@ -193,6 +195,11 @@ frc2::CommandPtr Drive::ScoreLeftCommand() {
             units::meters_per_second_t strafe_vel = (units::meters_per_second_t)(m_translationYPID.Calculate(m_poseEstimator.GetEstimatedPosition().Y().value(), YGoal));
             units::radians_per_second_t rot_vel = (units::radians_per_second_t)(m_rotationPID.Calculate(m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value(), RotGoal));
 
+            if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+                drive_vel = -drive_vel;
+                strafe_vel = -strafe_vel;
+            }
+
             SwerveDrive(drive_vel, strafe_vel, rot_vel, true);
         }
     ).Until(
@@ -214,32 +221,32 @@ frc2::CommandPtr Drive::ScoreRightCommand() {
             double Y = m_poseEstimator.GetEstimatedPosition().Y().value();
 
             if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
-                if(X < 11.893677 && Y > 3.555492 && Y < 4.496308) {
+                if(X < 13.058902 && Y > 3.555492 && Y < 4.496308) {
                     //Red Middle Left
                     XGoal = 11.519706;
                     YGoal = 3.77;
                     RotGoal = 0.0;
-                } else if(X < 11.893677 && Y > 4.496308) {
+                } else if(X < 13.058902 && Y > 4.496308) {
                     //Red Top Left
                     XGoal = 12.049452;
                     YGoal = 5.23;
                     RotGoal = -1.0471975512;
-                } else if(X < 11.893677 && Y < 3.555492) {
+                } else if(X < 13.058902 && Y < 3.555492) {
                     //Red Bottom Left
                     XGoal = 12.508098;
                     YGoal = 2.5718;
                     RotGoal = 1.0471975512;
-                } else if(X > 11.893677 && Y > 4.496308) {
+                } else if(X > 13.058902 && Y > 4.496308) {
                     //Red Top Right
                     XGoal = 13.609706;
                     YGoal = 5.48;
                     RotGoal = -2.09439510239;
-                } else if(X > 11.893677 && Y < 3.555492) {
+                } else if(X > 13.058902 && Y < 3.555492) {
                     //Red Bottom Right
                     XGoal = 14.068352;
                     YGoal = 2.8218;
                     RotGoal = 2.09439510239;
-                } else if(X > 11.893677 && Y > 3.555492 && Y < 4.496308) {
+                } else if(X > 13.058902 && Y > 3.555492 && Y < 4.496308) {
                     //Red Middle Right
                     XGoal = 14.598098;
                     YGoal = 4.2818;
@@ -285,6 +292,11 @@ frc2::CommandPtr Drive::ScoreRightCommand() {
             units::meters_per_second_t drive_vel = (units::meters_per_second_t)(m_translationXPID.Calculate(m_poseEstimator.GetEstimatedPosition().X().value(), XGoal));
             units::meters_per_second_t strafe_vel = (units::meters_per_second_t)(m_translationYPID.Calculate(m_poseEstimator.GetEstimatedPosition().Y().value(), YGoal));
             units::radians_per_second_t rot_vel = (units::radians_per_second_t)(m_rotationPID.Calculate(m_poseEstimator.GetEstimatedPosition().Rotation().Radians().value(), RotGoal));
+
+            if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+                drive_vel = -drive_vel;
+                strafe_vel = -strafe_vel;
+            }
 
             SwerveDrive(drive_vel, strafe_vel, rot_vel, true);
         }
@@ -339,23 +351,9 @@ frc::ChassisSpeeds Drive::getRobotRelativeChassisSpeeds() {
 }
 
 frc2::CommandPtr Drive::DoNothingCommand() {
-    return this->RunOnce(
+    return this->Run(
         [this]() {
-            pathplanner::PPHolonomicDriveController::overrideXYFeedback(
-                []() {return 0_mps;},
-                []() {return 0_mps;}
-            );
-            pathplanner::PPHolonomicDriveController::overrideRotationFeedback(
-                []() {return 0_deg_per_s;}
-            );
-        }
-    );
-}
-
-frc2::CommandPtr Drive::ClearOverridesCommand() {
-    return this->RunOnce(
-        [this]() {
-            pathplanner::PPHolonomicDriveController::clearFeedbackOverrides();
+            SwerveDrive(0_mps, 0_mps, 0_rad_per_s, false);
         }
     );
 }

@@ -95,3 +95,18 @@ frc2::CommandPtr Elevator::automaticCoralGrabCommand() {
         }
     );
 }
+
+frc2::CommandPtr Elevator::autonomousCoralCommand() {
+    return this->StartEnd(
+        [this]() {
+            m_coralMotor.Set(0.25);
+        },
+        [this]() {
+            m_coralMotor.Set(0.0);
+        }
+    ).Until(
+        [this]() {
+            return !m_coralSensor.Get();
+        }
+    );
+}

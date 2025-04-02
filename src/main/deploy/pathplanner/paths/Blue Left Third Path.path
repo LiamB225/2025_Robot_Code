@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.08296865115297,
-        "y": 6.780220420251984
+        "x": 2.123480648344363,
+        "y": 6.745032873330928
       },
       "isLocked": true,
       "linkedName": "Blue Left 2"
     },
     {
       "anchor": {
-        "x": 3.48,
+        "x": 3.45,
         "y": 5.23
       },
       "prevControl": {
-        "x": 3.3309862923335296,
-        "y": 5.461153321796035
+        "x": 3.3030378108979224,
+        "y": 5.432815184603525
       },
       "nextControl": null,
       "isLocked": true,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 0.75,
-    "maxAcceleration": 0.75,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 171.887,
     "maxAngularAcceleration": 171.887,
     "nominalVoltage": 12.0,

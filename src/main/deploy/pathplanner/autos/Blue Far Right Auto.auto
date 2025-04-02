@@ -24,21 +24,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "DoNothing"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeInCommand"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "FollowAgain"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeInCommand"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DoNothing"
+                }
+              }
+            ]
           }
         },
         {
@@ -61,21 +62,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "DoNothing"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "FollowAgain"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "GrabCoralCommand"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DoNothing"
+                }
+              }
+            ]
           }
         },
         {
@@ -98,15 +100,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "DoNothing"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeInCommand"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeInCommand"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DoNothing"
+                }
+              }
+            ]
           }
         }
       ]

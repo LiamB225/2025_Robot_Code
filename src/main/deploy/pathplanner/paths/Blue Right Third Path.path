@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2669967795341757,
-        "y": 1.4210136723299742
+        "x": 2.3543163323934353,
+        "y": 1.4452611131649422
       },
       "isLocked": false,
       "linkedName": "Blue Right 2"
@@ -20,8 +20,8 @@
         "y": 2.7118
       },
       "prevControl": {
-        "x": 2.7182917189098466,
-        "y": 1.734302377242091
+        "x": 2.9773261584776742,
+        "y": 1.9738979198460602
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 0.75,
-    "maxAcceleration": 0.75,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 171.887,
     "maxAngularAcceleration": 171.887,
     "nominalVoltage": 12.0,

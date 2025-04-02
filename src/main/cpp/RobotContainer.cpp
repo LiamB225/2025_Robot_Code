@@ -12,8 +12,8 @@ RobotContainer::RobotContainer() {
   pathplanner::NamedCommands::registerCommand("FourthElevatorCommand", m_elevator.fourthPositionCommand());
   pathplanner::NamedCommands::registerCommand("FirstElevatorCommand", m_elevator.firstPositionCommand());
   pathplanner::NamedCommands::registerCommand("IntakeInCommand", m_elevator.shootCoralCommand().WithTimeout(0.5_s));
+  pathplanner::NamedCommands::registerCommand("GrabCoralCommand", m_elevator.autonomousCoralCommand());
   pathplanner::NamedCommands::registerCommand("DoNothing", m_drive.DoNothingCommand());
-  pathplanner::NamedCommands::registerCommand("FollowAgain", m_drive.ClearOverridesCommand());
 
   autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
