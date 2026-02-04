@@ -27,7 +27,7 @@ The robot is built using the Command-Based framework and includes the following 
 *   **Motors:**
     *   REV Spark Max Motor Controllers
     *   REV NEO Brushless Motors
-    *   REV NEO 550 Motor Controllers
+    *   REV NEO 550 Brushless Motors
 
 ## 🎮 Controller Mappings
 
