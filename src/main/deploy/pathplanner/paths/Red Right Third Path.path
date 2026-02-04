@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.914805792755589,
-        "y": 6.385864922812134
+        "x": 15.14896852932376,
+        "y": 6.581660067853602
       },
       "isLocked": false,
       "linkedName": "Red Right 2"
     },
     {
       "anchor": {
-        "x": 13.839706,
-        "y": 5.34
+        "x": 13.89375,
+        "y": 5.3496413934426235
       },
       "prevControl": {
-        "x": 14.436574376747268,
-        "y": 5.947373413060862
+        "x": 14.74053863016279,
+        "y": 6.212168695996276
       },
       "nextControl": null,
       "isLocked": false,
@@ -35,8 +35,8 @@
   "globalConstraints": {
     "maxVelocity": 1.5,
     "maxAcceleration": 1.0,
-    "maxAngularVelocity": 171.887,
-    "maxAngularAcceleration": 171.887,
+    "maxAngularVelocity": 171.887339,
+    "maxAngularAcceleration": 171.887339,
     "nominalVoltage": 12.0,
     "unlimited": false
   },

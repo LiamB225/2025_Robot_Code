@@ -3,28 +3,28 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.6898491879350348,
-        "y": 7.262180974477958
+        "x": 1.67827868852459,
+        "y": 7.315624999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.123480648344363,
-        "y": 6.745032873330928
+        "x": 2.35166542601634,
+        "y": 6.602866740898996
       },
-      "isLocked": true,
+      "isLocked": false,
       "linkedName": "Blue Left 2"
     },
     {
       "anchor": {
-        "x": 3.45,
-        "y": 5.23
+        "x": 3.471,
+        "y": 5.273
       },
       "prevControl": {
-        "x": 3.3030378108979224,
-        "y": 5.432815184603525
+        "x": 3.2692821999539037,
+        "y": 5.53776507855368
       },
       "nextControl": null,
-      "isLocked": true,
+      "isLocked": false,
       "linkedName": null
     }
   ],
@@ -35,8 +35,8 @@
   "globalConstraints": {
     "maxVelocity": 1.5,
     "maxAcceleration": 1.0,
-    "maxAngularVelocity": 171.887,
-    "maxAngularAcceleration": 171.887,
+    "maxAngularVelocity": 171.887339,
+    "maxAngularAcceleration": 171.887339,
     "nominalVoltage": 12.0,
     "unlimited": false
   },

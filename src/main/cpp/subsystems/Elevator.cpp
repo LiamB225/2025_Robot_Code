@@ -51,7 +51,7 @@ frc2::CommandPtr Elevator::secondPositionCommand() {
 
 frc2::CommandPtr Elevator::thirdPositionCommand() {
     return this->RunOnce(
-        [this]() {elevatorPosition = 70.8_m;}
+        [this]() {elevatorPosition = 73_m;}
     );
 }
 
@@ -78,7 +78,7 @@ frc2::CommandPtr Elevator::coralInCommand() {
 
 frc2::CommandPtr Elevator::shootCoralCommand() {
     return this->StartEnd(
-        [this]() {m_coralMotor.Set(1.0);},
+        [this]() {m_coralMotor.Set(0.9);},
         [this]() {m_coralMotor.Set(0.0);}
     );
 }
